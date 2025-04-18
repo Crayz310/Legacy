@@ -299,17 +299,11 @@ class Web:
         )
 
     async def can_add(self, request: web.Request) -> web.Response:
-        if self.client_data and "LAVHOST" in os.environ:
-            return web.Response(status=403, body="Forbidden by host EULA")
-
         return web.Response(status=200, body="Yes")
 
     async def send_tg_code(self, request: web.Request) -> web.Response:
         if not self._check_session(request):
             return web.Response(status=401, body="Authorization required")
-
-        if self.client_data and "LAVHOST" in os.environ:
-            return web.Response(status=403, body="Forbidden by host EULA")
 
         if self._pending_client:
             return web.Response(status=208, body="Already pending")
@@ -473,6 +467,7 @@ class Web:
         token = utils.rand(8)
 
         markup = InlineKeyboardMarkup()
+        logging.debug(f"{token}")
         markup.add(
             InlineKeyboardButton(
                 "🔓 Authorize user",

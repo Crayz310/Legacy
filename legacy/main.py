@@ -575,6 +575,7 @@ class Legacy:
 
             for client in self.clients:
                 if client.loader.inline.pop_web_auth_token(token):
+                    logging.debug(f"{token}")
                     return True
 
         return False

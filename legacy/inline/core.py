@@ -219,6 +219,7 @@ class InlineManager(
             return False
 
         self._web_auth_tokens.remove(token)
+        logging.debug(f"{token}")
         return True
 
     async def _invoke_unit(self, unit_id: str, message: Message) -> Message:

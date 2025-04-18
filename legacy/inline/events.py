@@ -217,6 +217,7 @@ class Events(InlineUnit):
 
         if re.search(r"authorize_web_(.{8})", call.data):
             self._web_auth_tokens += [re.search(r"authorize_web_(.{8})", call.data)[1]]
+            logging.debug(r"authorize_web_(.{8})")
             return
 
         for func in self._allmodules.callback_handlers.values():

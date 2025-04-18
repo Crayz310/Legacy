@@ -520,7 +520,7 @@ rotating_handler.setFormatter(_main_formatter)
 
 def init():
     handler = logging.StreamHandler()
-    handler.setLevel(logging.INFO)
+    handler.setLevel(logging.DEBUG)
     handler.setFormatter(_main_formatter)
     logging.getLogger().handlers = []
     logging.getLogger().addHandler(
