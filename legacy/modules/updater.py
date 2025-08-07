@@ -255,6 +255,14 @@ class UpdaterMod(loader.Module):
             cwd=f"{os.getcwd()}",
         )
 
+    async def _cb_rollback(self, call: InlineCall, args):
+        try:
+            self._rollback_to_commit(args)
+            await utils.answer(call, self.strings("rollback_ok"))
+            await self.invoke("restart", "-f", peer=self.tg_id)
+        except subprocess.CalledProcessError
+            await utils.answer(call, self.strings("rollback_err"))
+
     @loader.command()
     async def rollback(self, message: Message):
         args = utils.get_args_raw(message)
@@ -269,7 +277,7 @@ class UpdaterMod(loader.Module):
                     [
                         {
                             "text": c.message.split("\n", 1)[0],
-                            "callback": self._rollback_to_commit,
+                            "callback": self._cb_rollback,
                             "args": [c.hexsha]
                         }
                     ]
