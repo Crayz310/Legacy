@@ -27,7 +27,7 @@ from legacytl.tl.types import (
     DialogFilterDefault,
 )
 
-from .. import loader, main, utils, version
+from .. import loader, inline, main, utils, version
 from .._internal import restart
 from ..inline.types import InlineCall
 
@@ -242,19 +242,48 @@ class UpdaterMod(loader.Module):
             self.strings("source").format(self.config["GIT_ORIGIN_URL"]),
         )
 
+    def _get_recent_commits(self, count=3):
+        repo = Repo()
+
+        commits = list(repo.iter_commits('HEAD', max_count=count))
+
+        return commits
+        
+    def _rollback_to_commit(self, commit):
+        subprocess.run(
+            ["git", "reset", "--hard", f"{commit}"],
+            cwd=f"{os.getcwd()}",
+        )
+
     @loader.command()
     async def rollback(self, message: Message):
         args = utils.get_args_raw(message)
 
         if not args:
-            await utils.answer(message, self.strings("rollback_no_args"))
+            commits = self._get_recent_commits()
+
+            await self.inline.form(
+                text=self.strings("rollback_no_args"),
+                message=message,
+                reply_markup=[
+                    [
+                        {
+                            "text": c.message.split("\n", 1)[0],
+                            "callback": self._rollback_to_commit,
+                            "args": [c.hexsha]
+                        }
+                    ]
+                    for c in commits
+                ] + [
+                    [
+                        {"text": self.strings("cancel"), "action": "close"}
+                    ]
+                ]
+            )
             return
 
         try:
-            subprocess.run(
-                ["git", "reset", "--hard", f"{args}"],
-                cwd=f"{os.getcwd()}",
-            )
+            self._rollback_to_commit(args)
             await utils.answer(message, self.strings("rollback_ok"))
             await self.invoke("restart", "-f", peer=message.peer_id)
         except subprocess.CalledProcessError:

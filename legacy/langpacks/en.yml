@@ -376,10 +376,10 @@ updater:
   _cmd_doc_source: "Links the source code of this project"
   _cmd_doc_update: "Downloads userbot updates"
   _cls_doc: "Updates itself"
-  rollback_no_args: "<emoji document_id=5465665476971471368>❌</emoji> <b>You need to specify commit SHA</b>"
+  rollback_no_args: "ℹ️ <b>Select a commit to rollback or specify the</b> <code>hexsha</code>"
   rollback_ok: "<emoji document_id=5215492745900077682>✅</emoji> <b>Rollback successful. After reboot everything is done</b>"
   rollback_err: "<emoji document_id=5465665476971471368>❌</emoji> <b>Unable to rollback</b>"
-  _cmd_doc_rollback: "Rollback to the specified commit"
+  _cmd_doc_rollback: "Rollback to the specified commit [hexsha]"
 
 api_protection:
   name: "APILimiter"
