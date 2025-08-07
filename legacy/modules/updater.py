@@ -260,7 +260,7 @@ class UpdaterMod(loader.Module):
             self._rollback_to_commit(args)
             await utils.answer(call, self.strings("rollback_ok"))
             await self.invoke("restart", "-f", peer=self.tg_id)
-        except subprocess.CalledProcessError
+        except subprocess.CalledProcessError:
             await utils.answer(call, self.strings("rollback_err"))
 
     @loader.command()
