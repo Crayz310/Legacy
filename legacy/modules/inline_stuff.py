@@ -123,6 +123,18 @@ class InlineStuff(loader.Module):
         await utils.answer(message, self.strings("bot_updated"))
 
     @loader.command()
+    async def ch_bot_token(self, message: Message):
+        args = utils.get_args_raw(message)
+
+        if not args:
+            await utils.answer(message, self.strings("token_not_provided"))
+            return
+
+        self._db.set("legacy.inline", "bot_token", args)
+
+        await utils.answer(message, "token_changed")
+
+    @loader.command()
     async def iauth(self, message: Message, force: bool = False):
         if "SHARKHOST" in os.environ:
             await utils.answer(message, self.strings("forbid"))

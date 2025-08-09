@@ -299,6 +299,8 @@ inline_stuff:
   bot_username_occupied: "<emoji document_id=5210952531676504517>🚫</emoji> <b>This username is already occupied</b>"
   bot_updated: "<emoji document_id=6318792204118656433>🎉</emoji> <b>Config successfully saved. Restart userbot to apply changes</b>"
   this_is_legacy: "🌙 <b>Hi! This is Legacy — powerful modular Telegram userbot. You can install it to your account!</b>\n\n<b>🌍 <a href=\"https://github.com/Crayz310/Legacy\">GitHub</a></b>\n<b>👥 <a href=\"https://t.me/legacy_help\">Support chat</a></b>"
+  token_not_provided: "<emoji document_id=5210952531676504517>🚫</emoji> <b>Bot token not provided</b>"
+  token_changed: "<emoji document_id=5427009714745517609>✅</emoji> <b>Bot token changed. Please restart userbot</b>"
   privacy_leak_nowarn: "<b>⚠️ This command grants access to your Legacy authorization. Running it in public chats is a security risk. To disable this warning, run</b> <code>{}</code>"
   privacy_leak: "<b>⚠️ This command grants access to your Legacy authorization. Running it in public chats is a security risk</b>"
   btn_yes: "🚸 Run anyway"
@@ -316,6 +318,7 @@ inline_stuff:
   wrong_2fa: "❗️ Incorrect 2FA. Please try again:"
   success_auth: "✅ Successfully authenticated"
   _cmd_doc_ch_legacy_bot: "<username> - Change your Legacy inline bot username"
+  _cmd_doc_ch_bot_token: "<token> - Change inline bot token"
   _cmd_doc_iauth: "Add user via inline bot"
   _cls_doc: "Provides support for inline stuff"
 
