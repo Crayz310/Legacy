@@ -341,6 +341,13 @@ def parse_arguments() -> dict:
         default=True,
         help="Do not print colorful output using ANSI escapes",
     )
+    parser.add_argument(
+        "--bot-token", "-bt",
+        dest="bot_token",
+        action="store",
+        type=str,
+        help="Your inline bot token"
+    )
     arguments = parser.parse_args()
     logging.debug(arguments)
     return arguments

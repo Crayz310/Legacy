@@ -11,6 +11,7 @@ import re
 from legacytl.errors.rpcerrorlist import YouBlockedUserError
 from legacytl.tl.functions.contacts import UnblockRequest
 
+
 from .. import utils
 from .._internal import fw_protect
 from .types import InlineUnit
@@ -97,6 +98,19 @@ class TokenObtainment(InlineUnit):
         create_new_if_needed: bool = True,
         revoke_token: bool = False,
     ) -> bool:
+        from ..main import parse_arguments
+
+        arguments = parse_arguments()
+        passed_token = getattr(arguments, "bot_token", None)
+
+        if passed_token:
+            logger.info("Token was found in CLI arguments. It will be used for inline bot")
+
+            self._token = passed_token
+            self._db.set("legacy.inline", "bot_token", self._token)
+
+            return True
+
         if self._token:
             return True
 
