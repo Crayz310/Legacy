@@ -9,6 +9,7 @@ from legacytl.tl.types import Message
 from legacytl.utils import get_display_name
 from .. import loader, utils, version
 import platform as lib_platform
+import distro
 import getpass
 
 
@@ -81,7 +82,7 @@ class LegacyInfoMod(loader.Module):
                 hostname=lib_platform.node(),
                 user=getpass.getuser(),
                 kernel=lib_platform.uname().release,
-                os=lib_platform.system(),
+                os=distro.name(pretty=True),
                 label=utils.get_platform_emoji() if self._client.legacy_me.premium else "🌙 <b>Legacy</b>"
             )
             if self.config["custom_message"] and "-d" not in args
