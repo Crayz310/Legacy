@@ -45,4 +45,11 @@ def compat(code: str) -> str:
         code,
     )
 
+    # *.hikka_me → *.legacy_me
+    code = re.sub(
+        r"\b([\w\.-]+)\.hikka_me\b",
+        r"\1.legacy_me",
+        code,
+    )
+
     return code
