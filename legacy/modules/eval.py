@@ -22,7 +22,7 @@ from legacytl.tl.types.messages import AffectedMessages
 from meval import meval
 
 from .. import loader, utils
-from ..log import HikkaException
+from ..log import LegacyException
 
 
 @loader.tds
@@ -53,7 +53,7 @@ class Evaluator(loader.Module):
 
             printed_output = output_buffer.getvalue()
         except Exception:
-            item = HikkaException.from_exc_info(*sys.exc_info())
+            item = LegacyException.from_exc_info(*sys.exc_info())
 
             await utils.answer(
                 message,

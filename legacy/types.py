@@ -46,7 +46,7 @@ from .pointers import PointerDict, PointerList
 
 __all__ = [
     "JSONSerializable",
-    "HikkaReplyMarkup",
+    "LegacyReplyMarkup",
     "ListLike",
     "Command",
     "StringLoader",
@@ -69,7 +69,9 @@ logger = logging.getLogger(__name__)
 
 
 JSONSerializable = typing.Union[str, int, float, bool, list, dict, None]
-HikkaReplyMarkup = typing.Union[typing.List[typing.List[dict]], typing.List[dict], dict]
+LegacyReplyMarkup = typing.Union[
+    typing.List[typing.List[dict]], typing.List[dict], dict
+]
 ListLike = typing.Union[list, set, tuple]
 Command = typing.Callable[..., typing.Awaitable[typing.Any]]
 
@@ -189,7 +191,6 @@ class Module:
     def watchers(self) -> typing.Dict[str, Command]:
         """List of watchers that module supports"""
         return get_watchers(self)
-
 
     @property
     def legacy_watchers(self) -> typing.Dict[str, Command]:

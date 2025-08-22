@@ -32,7 +32,7 @@ from legacytl.extensions.html import CUSTOM_EMOJIS
 from legacytl.tl.types import Message
 
 from .. import main, utils
-from ..types import HikkaReplyMarkup
+from ..types import LegacyReplyMarkup
 from .types import InlineMessage, InlineUnit
 
 logger = logging.getLogger(__name__)
@@ -52,15 +52,17 @@ VERIFICATION_EMOJIES = list(
     )
 )
 
+
 class Placeholder:
     """Placeholder"""
+
 
 class Form(InlineUnit):
     async def form(
         self,
         text: str,
         message: typing.Union[Message, int],
-        reply_markup: typing.Optional[HikkaReplyMarkup] = None,
+        reply_markup: typing.Optional[LegacyReplyMarkup] = None,
         *,
         force_me: bool = False,
         always_allow: typing.Optional[typing.List[int]] = None,

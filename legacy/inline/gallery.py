@@ -30,7 +30,7 @@ from legacytl.extensions.html import CUSTOM_EMOJIS
 from legacytl.tl.types import Message
 
 from .. import main, utils
-from ..types import HikkaReplyMarkup
+from ..types import LegacyReplyMarkup
 from .types import InlineMessage, InlineUnit
 
 logger = logging.getLogger(__name__)
@@ -56,7 +56,7 @@ class Gallery(InlineUnit):
         next_handler: typing.Union[callable, typing.List[str]],
         caption: typing.Union[typing.List[str], str, callable] = "",
         *,
-        custom_buttons: typing.Optional[HikkaReplyMarkup] = None,
+        custom_buttons: typing.Optional[LegacyReplyMarkup] = None,
         force_me: bool = False,
         always_allow: typing.Optional[typing.List[int]] = None,
         manual_security: bool = False,
@@ -513,7 +513,6 @@ class Gallery(InlineUnit):
 
         if page == "close":
             return await self._delete_unit_message(call, unit_id)
-
 
         if page < 0:
             await call.answer("No way back")

@@ -26,7 +26,7 @@ from legacytl.extensions.html import CUSTOM_EMOJIS
 from legacytl.tl.types import Message
 
 from .. import main, utils
-from ..types import HikkaReplyMarkup
+from ..types import LegacyReplyMarkup
 from .types import InlineMessage, InlineUnit
 
 logger = logging.getLogger(__name__)
@@ -45,7 +45,7 @@ class List(InlineUnit):
         ttl: typing.Union[int, bool] = False,
         on_unload: typing.Optional[typing.Callable[[], typing.Any]] = None,
         silent: bool = False,
-        custom_buttons: typing.Optional[HikkaReplyMarkup] = None,
+        custom_buttons: typing.Optional[LegacyReplyMarkup] = None,
     ) -> typing.Union[bool, InlineMessage]:
         """
         Send inline list to chat

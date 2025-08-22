@@ -36,7 +36,7 @@ from aiogram.utils.exceptions import (
 )
 
 from .. import utils
-from ..types import HikkaReplyMarkup
+from ..types import LegacyReplyMarkup
 from .types import InlineCall, InlineUnit
 
 logger = logging.getLogger(__name__)
@@ -45,7 +45,7 @@ logger = logging.getLogger(__name__)
 class Utils(InlineUnit):
     def _generate_markup(
         self,
-        markup_obj: typing.Optional[typing.Union[HikkaReplyMarkup, str]],
+        markup_obj: typing.Optional[typing.Union[LegacyReplyMarkup, str]],
     ) -> typing.Optional[InlineKeyboardMarkup]:
         """Generate markup for form or list of `dict`s"""
         if not markup_obj:
@@ -269,7 +269,7 @@ class Utils(InlineUnit):
         return None
 
     def _normalize_markup(
-        self, reply_markup: HikkaReplyMarkup
+        self, reply_markup: LegacyReplyMarkup
     ) -> typing.List[typing.List[typing.Dict[str, typing.Any]]]:
         if isinstance(reply_markup, dict):
             return [[reply_markup]]
@@ -294,7 +294,7 @@ class Utils(InlineUnit):
     async def _edit_unit(
         self,
         text: typing.Optional[str] = None,
-        reply_markup: typing.Optional[HikkaReplyMarkup] = None,
+        reply_markup: typing.Optional[LegacyReplyMarkup] = None,
         *,
         photo: typing.Optional[str] = None,
         file: typing.Optional[str] = None,
@@ -551,7 +551,10 @@ class Utils(InlineUnit):
         unit_id: typing.Optional[str] = None,
     ) -> bool:
         """Params `self`, `unit_id` are for internal use only, do not try to pass them"""
-        await self._client.delete_messages(call._units.get(unit_id).get('chat'), call._units.get(unit_id).get('message_id'))
+        await self._client.delete_messages(
+            call._units.get(unit_id).get("chat"),
+            call._units.get(unit_id).get("message_id"),
+        )
         return await call.answer("")
 
     async def _unload_unit(self, unit_id: str) -> bool:
@@ -690,7 +693,7 @@ class Utils(InlineUnit):
 
     def _validate_markup(
         self,
-        buttons: typing.Optional[HikkaReplyMarkup],
+        buttons: typing.Optional[LegacyReplyMarkup],
     ) -> typing.List[typing.List[typing.Dict[str, typing.Any]]]:
         if buttons is None:
             buttons = []

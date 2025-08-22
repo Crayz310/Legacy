@@ -99,7 +99,7 @@ from legacytl.tl.types import (
 from ._internal import fw_protect
 from .inline.types import BotInlineCall, InlineCall, InlineMessage
 from .tl_cache import CustomTelegramClient
-from .types import HikkaReplyMarkup, ListLike, Module
+from .types import LegacyReplyMarkup, ListLike, Module
 
 FormattingEntity = typing.Union[
     MessageEntityUnknown,
@@ -435,7 +435,7 @@ async def answer(
     message: typing.Union[Message, InlineCall, InlineMessage],
     response: str,
     *,
-    reply_markup: typing.Optional[HikkaReplyMarkup] = None,
+    reply_markup: typing.Optional[LegacyReplyMarkup] = None,
     **kwargs,
 ) -> typing.Union[InlineCall, InlineMessage, Message]:
     """

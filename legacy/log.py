@@ -20,6 +20,7 @@ import typing
 from logging.handlers import RotatingFileHandler
 
 import legacytl
+from legacytl.errors.rpcbaseerrors import ServerError, RPCError
 from aiogram.utils.exceptions import NetworkError
 
 from . import utils
@@ -68,11 +69,18 @@ def override_text(exception: Exception) -> typing.Optional[str]:
     """Returns error-specific description if available, else `None`"""
     if isinstance(exception, NetworkError):
         return "✈️ <b>You have problems with internet connection on your server.</b>"
-
+    if isinstance(exception, ServerError):
+        return "📡 <b>Telegram servers are currently experiencing issues. Please try again later.</b>"
+    if isinstance(exception, RPCError) and "TRANSLATION_TIMEOUT" in str(exception):
+        return (
+            "🕓 <b>Telegram translation service timed out. Please try again later.</b>"
+        )
+    if isinstance(exception, ModuleNotFoundError):
+        return f"📦 {traceback.format_exception_only(type(exception), exception)[0].split(':')[1].strip()}"
     return None
 
 
-class HikkaException:
+class LegacyException:
     def __init__(
         self,
         message: str,
@@ -94,7 +102,7 @@ class HikkaException:
         tb: traceback.TracebackException,
         stack: typing.Optional[typing.List[inspect.FrameInfo]] = None,
         comment: typing.Optional[typing.Any] = None,
-    ) -> "HikkaException":
+    ) -> "LegacyException":
         def to_hashable(dictionary: dict) -> dict:
             dictionary = dictionary.copy()
             for key, value in dictionary.items():
@@ -266,7 +274,7 @@ class TelegramLogsHandler(logging.Handler):
         self,
         call: BotInlineCall,
         bot: "aiogram.Bot",  # type: ignore  # noqa: F821
-        item: HikkaException,
+        item: LegacyException,
     ):
         chunks = item.message + "\n\n<b>🌙 Full traceback:</b>\n" + item.full_stack
 
@@ -280,7 +288,7 @@ class TelegramLogsHandler(logging.Handler):
         for chunk in chunks[1:]:
             await bot.send_message(chat_id=call.chat_id, text=chunk)
 
-    def _gen_web_debug_button(self, item: HikkaException) -> list:
+    def _gen_web_debug_button(self, item: LegacyException) -> list:
         if not item.sysinfo:
             return []
 
@@ -310,7 +318,7 @@ class TelegramLogsHandler(logging.Handler):
     async def _start_debugger(
         self,
         call: "InlineCall",  # type: ignore  # noqa: F821
-        item: HikkaException,
+        item: LegacyException,
     ):
         if not self.web_debugger:
             self.web_debugger = WebDebugger()
@@ -359,9 +367,9 @@ class TelegramLogsHandler(logging.Handler):
             }
             for client_id in self._mods:
                 for item in self.tg_buff:
-                    if isinstance(item[0], HikkaException) and (
+                    if isinstance(item[0], LegacyException) and (
                         not item[1] or item[1] == client_id or self.force_send_all
-                        ):
+                    ):
                         await self._mods[client_id].inline.bot.send_message(
                             self._mods[client_id].logchat,
                             item[0].message,
@@ -440,7 +448,7 @@ class TelegramLogsHandler(logging.Handler):
 
         if record.levelno >= self.tg_level:
             if record.exc_info:
-                exc = HikkaException.from_exc_info(
+                exc = LegacyException.from_exc_info(
                     *record.exc_info,
                     stack=record.__dict__.get("stack", None),
                     comment=record.msg % record.args,
