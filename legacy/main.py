@@ -530,8 +530,6 @@ class Legacy:
             client._tg_id = telegram_id
             client.tg_id = telegram_id
             client.legacy_me = me
-            client.heroku_me = me  # Compatibility with Heroku client
-            client.hikka_me = me  # Compatibility with Hikka client
 
         session = SQLiteSession(
             os.path.join(
@@ -789,8 +787,6 @@ class Legacy:
             client._tg_id = me.id
             client.tg_id = me.id
             client.legacy_me = me
-            client.heroku_me = me
-            client.hikka_me = me
             while await self.amain(first, client):
                 first = False
 
