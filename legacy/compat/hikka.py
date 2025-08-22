@@ -17,14 +17,32 @@ def compat(code: str) -> str:
     :rtype: str
     """
 
-    return "\n".join(
-        [
-            re.sub(
-                r"\butils\.get_platform_name\b",
-                "utils.get_named_platform",
-                line,
-                flags=re.M,
-            )
-            for line in code.splitlines()
-        ]
+    # utils.get_platform_name → utils.get_named_platform
+    code = re.sub(
+        r"\butils\.get_platform_name\b",
+        "utils.get_named_platform",
+        code,
     )
+
+    # import hikka.something → import legacy.something
+    code = re.sub(
+        r"\bimport\s+hikka(\.[\w\.]*)",
+        r"import legacy\1",
+        code,
+    )
+
+    # from hikka import ... → from legacy import ...
+    code = re.sub(
+        r"\bfrom\s+hikka\b",
+        "from legacy",
+        code,
+    )
+
+    # hikka. → legacy.
+    code = re.sub(
+        r"\bhikka\.",
+        "legacy.",
+        code,
+    )
+
+    return code
