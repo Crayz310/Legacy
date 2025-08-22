@@ -1,5 +1,5 @@
 # Legacy Userbot Changelog
-## 🌙 Legacy
+## 🌙 Legacy: Continuum
 # 💸 Financed by: @xdesai @ebed_tg - paid with souls, psyche, time and body (telethon fucked us in all holes)
 
 - Switched to Telethon (a.k.a legacy-tl)
@@ -24,3 +24,21 @@
 - Added authorization via inline bot
 - Improved Ukrainian translation
 - Added module search via Limoka
+
+## 🌙 Legacy: Catalyst
+
+- Improved UA translation
+- Improved inline authorization
+- Fixed LegacyHelp module
+- Back button added in some places
+- Blockquotes added in aliasescmd
+- Sharkhost platform added
+- Reworked rollbackcmd
+- Added new keyword {label} to LegacyHelp
+- Added the ability to specify a token for an inline bot via arguments and 'ch_bot_token' cmd
+- utils.answer and utils.answer_file methods have been updated
+- New CLI banner
+- Added configuration for eval
+- Methods have been refactored
+- Termux platform removed
+
