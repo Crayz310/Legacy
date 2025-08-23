@@ -106,7 +106,7 @@ class BotInlineMessage:
         )
 
 
-class InlineCall(InlineMessage):
+class InlineCall(CallbackQuery, InlineMessage):
     """Modified version of classic aiogram `CallbackQuery`"""
 
     def __init__(
@@ -115,21 +115,19 @@ class InlineCall(InlineMessage):
         inline_manager: "InlineManager",  # type: ignore  # noqa: F821
         unit_id: str,
     ):
+        CallbackQuery.__init__(self)
+        for attr in {
+            "id",
+            "from_user",
+            "message",
+            "inline_message_id",
+            "chat_instance",
+            "data",
+            "game_short_name",
+        }:
+            setattr(self, attr, getattr(call, attr, None))
         self.original_call = call
-
-        self.id = call.id
-        self.from_user = call.from_user
-        self.message = call.message
-        self.inline_message_id = call.inline_message_id
-        self.chat_instance = call.chat_instance
-        self.data = call.data
-        self.game_short_name = call.game_short_name
-
-        super().__init__(
-            inline_manager,
-            unit_id,
-            call.inline_message_id,
-        )
+        InlineMessage.__init__(self, inline_manager, unit_id, call.inline_message_id)
 
     async def delete(self):
         unit = self._units.get(self.unit_id)
