@@ -23,13 +23,19 @@ apt update && apt install git python3 -y && git clone https://github.com/Crayz31
 <i>If you are on VPS\VDS, type <code>--proxy-pass</code> in the end of command to open SSH tunnel to your Legacy web interface, or use <code>--no-web</code> to complete setup in console</i><br>
 
 <b>🐬 Docker:</b><br>
+
 ```bash
-git clone https://github.com/Crayz310/Legacy && cd Legacy && sudo docker build . -t Crayz310/Legacy:latest
+git clone https://github.com/Crayz310/Legacy && cd Legacy && sudo docker build . -t Crayz310/legacy:latest
 ```
 
 ```bash
-sudo docker run --restart=unless-stopped --name <container name> -p <port>:8080 --detach -it Crayz310/Legacy:latest
+sudo docker run --restart=unless-stopped --name <container name> -p <port>:8080 --detach -it Crayz310/legacy:latest
 ```
+
+<b>🚂 Deploy on <a href="https://railway.com/template/47hYUn?referralCode=PvevLV">Railway</a></b>
+
+<i>Be careful! Any userbots are officially banned on Railway, if your account is banned, neither the creator nor other people are to blame for this</i>
+
 <hr>
 <h2><img src="https://img.icons8.com/?size=100&id=PClBimo4GQGJ&format=png&color=000000" height="54" align="center" style="margin-right: 7px;"> Changes</h2>
 

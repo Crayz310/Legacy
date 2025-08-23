@@ -41,4 +41,6 @@
 - Added configuration for eval
 - Methods have been refactored
 - Termux platform removed
+- Improved backward compatibility with Hikka
+- Fixed terminating the process 
 
