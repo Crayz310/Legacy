@@ -197,8 +197,8 @@ terminal:
 legacy_backup:
   name: "LegacyBackup"
   period: "⌚️ <b>Unit «ALPHA»</b> creates database backups periodically. You can change this behavior later.\n\nPlease, select the periodicity of automatic database backups"
-  saved: "✅ Backup period saved. You can re-configure it later with .set_backup_period"
-  never: "✅ I will not make automatic backups. You can re-configure it later with .set_backup_period"
+  saved: "✅ <b>Backup period saved. You can re-configure it later with</b> <code>{}set_backup_period</code>"
+  never: "✅ <b>I will not make automatic backups. You can re-configure it later with</b> <code>{}set_backup_period</code>"
   invalid_args: "🚫 <b>Specify correct backup period in hours, or `0` to disable</b>"
   backup_caption: "👆 <b>This is your backup.\nDo not give it to anyone, it contains personal info.\nIf you need to restore it, you can use</b> <code>{prefix}restore</code> <b>in reply to this file or button below.</b>"
   reply_to_file: "<emoji document_id=5210952531676504517>🚫</emoji> <b>Reply to .backup file</b>"

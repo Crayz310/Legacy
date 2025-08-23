@@ -71,14 +71,14 @@ class LegacyBackupMod(loader.Module):
     async def _set_backup_period(self, call: BotInlineCall, value: int):
         if not value:
             self.set("period", "disabled")
-            await call.answer(self.strings("never"), show_alert=True)
+            await call.answer(self.strings("never").format(self.get_prefix()), show_alert=True)
             await call.delete()
             return
 
         self.set("period", value * 60 * 60)
         self.set("last_backup", round(time.time()))
 
-        await call.answer(self.strings("saved"), show_alert=True)
+        await call.answer(self.strings("saved").format(self.get_prefix()), show_alert=True)
         await call.delete()
 
     @loader.command()
@@ -93,13 +93,13 @@ class LegacyBackupMod(loader.Module):
 
         if not int(args):
             self.set("period", "disabled")
-            await utils.answer(message, f"<b>{self.strings('never')}</b>")
+            await utils.answer(message, self.strings("never").format(self.get_prefix()))
             return
 
         period = int(args) * 60 * 60
         self.set("period", period)
         self.set("last_backup", round(time.time()))
-        await utils.answer(message, f"<b>{self.strings('saved')}</b>")
+        await utils.answer(message, self.strings("saved").format(self.get_prefix()))
 
     @loader.loop(interval=1, autostart=True)
     async def handler(self):
