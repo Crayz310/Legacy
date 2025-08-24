@@ -28,7 +28,7 @@ import contextlib
 import functools
 import inspect
 import io
-import json
+import ujson
 import logging
 import os
 import random
@@ -1328,7 +1328,7 @@ def is_serializable(x: typing.Any, /) -> bool:
     :return: True if object is JSON-serializable, False otherwise
     """
     try:
-        json.dumps(x)
+        ujson.dumps(x)
         return True
     except Exception:
         return False

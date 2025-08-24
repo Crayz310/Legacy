@@ -6,7 +6,7 @@
 
 import asyncio
 import collections
-import json
+import ujson
 import logging
 import time
 
@@ -83,8 +83,8 @@ class Database(dict):
     def read(self):
         """Read database and stores it in self"""
         try:
-            self.update(**json.loads(self._db_file.read_text()))
-        except json.decoder.JSONDecodeError:
+            self.update(**ujson.loads(self._db_file.read_text()))
+        except ujson.decoder.JSONDecodeError:
             logger.warning("Database read failed! Creating new one...")
         except FileNotFoundError:
             logger.debug("Database file not found, creating new one...")
@@ -155,7 +155,7 @@ class Database(dict):
         while len(self._revisions) > 15:
             self._revisions.pop()
         try:
-            self._db_file.write_text(json.dumps(self, indent=4))
+            self._db_file.write_text(ujson.dumps(self, indent=4))
         except Exception:
             logger.exception("Database save failed!")
             return False

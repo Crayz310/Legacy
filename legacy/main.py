@@ -29,7 +29,7 @@ import socket
 import collections
 import contextlib
 import importlib
-import json
+import ujson
 import logging
 import os
 import random
@@ -214,7 +214,7 @@ def get_config_key(key: str) -> typing.Union[str, bool]:
     :return: Value of config key or `False`, if it doesn't exist
     """
     try:
-        return json.loads(CONFIG_PATH.read_text()).get(key, False)
+        return ujson.loads(CONFIG_PATH.read_text()).get(key, False)
     except FileNotFoundError:
         return False
 
@@ -228,7 +228,7 @@ def save_config_key(key: str, value: str) -> bool:
     """
     try:
         # Try to open our newly created json config
-        config = json.loads(CONFIG_PATH.read_text())
+        config = ujson.loads(CONFIG_PATH.read_text())
     except FileNotFoundError:
         # If it doesn't exist, just default config to none
         # It won't cause problems, bc after new save
@@ -238,7 +238,7 @@ def save_config_key(key: str, value: str) -> bool:
     # Assign config value
     config[key] = value
     # And save config
-    CONFIG_PATH.write_text(json.dumps(config, indent=4))
+    CONFIG_PATH.write_text(ujson.dumps(config, indent=4))
     return True
 
 

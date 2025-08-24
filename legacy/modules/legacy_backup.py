@@ -8,7 +8,7 @@ import asyncio
 import contextlib
 import datetime
 import io
-import json
+import ujson
 import logging
 import os
 import time
@@ -120,7 +120,7 @@ class LegacyBackupMod(loader.Module):
                 self.get("last_backup") + self.get("period") - time.time()
             )
 
-            db_dump = json.dumps(self._db).encode()
+            db_dump = ujson.dumps(self._db).encode()
 
             result = io.BytesIO()
 
@@ -186,7 +186,7 @@ class LegacyBackupMod(loader.Module):
 
             with zipfile.ZipFile(file) as zf:
                 with zf.open("db-backup.json", "r") as db_file:
-                    new_db = json.loads(db_file.read().decode())
+                    new_db = ujson.loads(db_file.read().decode())
 
                     with contextlib.suppress(KeyError):
                         new_db["legacy.inline"].pop("bot_token")
@@ -214,7 +214,7 @@ class LegacyBackupMod(loader.Module):
 
     @loader.command()
     async def backup(self, message: Message):
-        db_dump = json.dumps(self._db).encode()
+        db_dump = ujson.dumps(self._db).encode()
 
         result = io.BytesIO()
 
@@ -269,7 +269,7 @@ class LegacyBackupMod(loader.Module):
 
             with zipfile.ZipFile(file) as zf:
                 with zf.open("db-backup.json", "r") as db_file:
-                    new_db = json.loads(db_file.read().decode())
+                    new_db = ujson.loads(db_file.read().decode())
 
                     with contextlib.suppress(KeyError):
                         new_db["legacy.inline"].pop("bot_token")

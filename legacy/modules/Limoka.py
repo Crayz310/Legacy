@@ -11,7 +11,7 @@ import random
 import logging
 import os
 import html
-import json
+import ujson
 from datetime import datetime
 import asyncio
 
@@ -59,7 +59,7 @@ class LimokaAPI:
     async def get_all_modules(self, url):
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
-                return json.loads(await response.text())
+                return ujson.loads(await response.text())
 
 
 @loader.tds

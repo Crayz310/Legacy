@@ -4,7 +4,7 @@
 # You can redistribute it and/or modify it under the terms of the GNU AGPLv3
 # 🔑 https://www.gnu.org/licenses/agpl-3.0.html
 
-import json
+import ujson
 import logging
 import typing
 from pathlib import Path
@@ -51,7 +51,7 @@ class BaseTranslator:
         prefix: str = "legacy.modules.",
     ) -> typing.Optional[dict]:
         if suffix == ".json":
-            return json.loads(content)
+            return ujson.loads(content)
 
         content = yaml.load(content)
         if all(len(key) == 2 for key in content):

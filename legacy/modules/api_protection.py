@@ -6,7 +6,7 @@
 
 import asyncio
 import io
-import json
+import ujson
 import logging
 import random
 import time
@@ -182,7 +182,7 @@ class APIRatelimiterMod(loader.Module):
                     ):
                         self._lock = True
                         report = io.BytesIO(
-                            json.dumps(
+                            ujson.dumps(
                                 self._ratelimiter,
                                 indent=4,
                             ).encode()
