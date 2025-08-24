@@ -15,5 +15,7 @@ aiopsutil
 GitPython
 whoosh==2.7.4
 distro==1.9.0
+uvloop==0.21.0
+ujson==5.11.0
 
 # Python 3.8+
