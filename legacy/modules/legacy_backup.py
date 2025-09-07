@@ -154,7 +154,7 @@ class LegacyBackupMod(loader.Module):
                     [
                         [
                             {
-                                "text": "↪️ Restore this",
+                                "text": self.strings("restore_this"),
                                 "data": "legacy/backup/restore/confirm",
                             },
                         ],
@@ -177,17 +177,27 @@ class LegacyBackupMod(loader.Module):
         if call.data == "legacy/backup/restore/confirm":
             await utils.answer(
                 call,
-                "❓ <b>Are you sure?</b>",
-                reply_markup={
-                    "text": "✅ Yes",
-                    "data": "legacy/backup/restore",
-                },
+                self.strings("confirm"),
+                reply_markup=[
+                    {
+                        "text": self.strings("_btn_yes"),
+                        "data": "legacy/backup/restore",
+                    },
+                    {
+                        "text": self.strings("_btn_no"),
+                        "data": "legacy/backup/restore/cancel",
+                    }
+                ],
             )
+            return
+
+        # ToDo
+        if call.data == "legacy/backup/restore/cancel":
             return
 
         file = await (
             await self._client.get_messages(
-                self._backup_channel, call.message.message_id
+                self._backup_channel, ids=call.message.message_id
             )
         )[0].download_media(bytes)
 
@@ -246,13 +256,13 @@ class LegacyBackupMod(loader.Module):
             outfile,
             caption=self.strings("backup_caption").format(
                 prefix=self.get_prefix(message.sender_id),
-                num_of_modules=f"{len(self.allmodules.modules)}",
+                num_of_modules=f"{len([m for m in self.allmodules.modules if getattr(m, '__origin__', None) != '<core>'])}",
             ),
             reply_markup=self.inline.generate_markup(
                 [
                     [
                         {
-                            "text": "↪️ Restore this",
+                            "text": self.strings("restore_this"),
                             "data": "legacy/backup/restore/confirm",
                         },
                     ],
