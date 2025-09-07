@@ -150,6 +150,10 @@ class LegacyBackupMod(loader.Module):
             await self.inline.bot.send_document(
                 int(f"-100{self._backup_channel.id}"),
                 outfile,
+                caption=self.strings("backup_caption").format(
+                    prefix=self.get_prefix(),
+                    num_of_modules=f"{len([m for m in self.allmodules.modules if getattr(m, '__origin__', None) != '<core>'])}",
+                ),
                 reply_markup=self.inline.generate_markup(
                     [
                         [
