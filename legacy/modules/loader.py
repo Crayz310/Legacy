@@ -857,15 +857,7 @@ class LoaderMod(loader.Module):
         )
 
         def loaded_msg(use_subscribe: bool = True):
-            nonlocal \
-                modname, \
-                version, \
-                modhelp, \
-                developer, \
-                origin, \
-                subscribe, \
-                blob_link, \
-                depends_from
+            nonlocal modname, version, modhelp, developer, origin, subscribe, blob_link, depends_from
             return self.strings("loaded").format(
                 modname.strip(),
                 version,
@@ -1098,15 +1090,9 @@ class LoaderMod(loader.Module):
         await utils.answer(message, self.strings("repo_deleted").format(args))
 
     async def _inline__clearmodules(self, call: InlineCall):
-        self.set("loaded_modules", {})
-
-        for file in os.scandir(loader.LOADED_MODULES_DIR):
-            try:
-                shutil.rmtree(file.path)
-            except Exception:
-                logger.debug("Failed to remove %s", file.path, exc_info=True)
-
-        await utils.answer(call, self.strings("all_modules_deleted"))
+        self._db.set("LoaderMod", "loaded_modules", {})
+        shutil.rmtree(loader.LOADED_MODULES_DIR)
+        await utils.answer(call, self.strings["all_modules_deleted"])
         await self.lookup("Updater").restart_common(call)
 
     async def _update_modules(self):

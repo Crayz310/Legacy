@@ -41,7 +41,7 @@ class LegacyConfigMod(loader.Module):
                 (
                     f"<code>{'...'}</code>"
                     if _cut and len(value) > 0
-                    else utils.escape_html(item.strip())
+                    else utils.escape_html(item).strip()
                 )
                 for item in value
             ]
