@@ -43,4 +43,7 @@
 - Termux platform removed
 - Improved backward compatibility with Hikka
 - Fixed terminating the process 
-
+- Added custom prefixes for owners
+- Removed debugger
+- Fixed SudoMessageEditor in TerminalMod
+- Added HikkaHost EULA

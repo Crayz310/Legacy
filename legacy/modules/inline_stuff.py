@@ -152,7 +152,7 @@ class InlineStuff(loader.Module):
 
     @loader.command()
     async def iauth(self, message, force: bool = False):
-        if "SHARKHOST" in os.environ:
+        if "SHARKHOST" in os.environ or "HIKKAHOST" in os.environ:
             await utils.answer(message, self.strings["forbid"])
             return
 
