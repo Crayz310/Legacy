@@ -173,7 +173,7 @@ def generate_random_system_version():
 
     :return: A randomly generated system version string.
     :example: "Windows 10.0.19042.1234" or "Ubuntu 20.04.19042.1234"
-    ""
+    """
     os_choices = [
         ("Windows", "Vista"),
         ("Windows", "XP"),
