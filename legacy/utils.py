@@ -930,7 +930,7 @@ def get_named_platform() -> str:
         return "🛡 Aeza"
 
     if main.IS_SHARKHOST:
-        return "🦈 Sharkhost"
+        return "☕️ TeaHost"
 
     if main.IS_RAILWAY:
         return "🚂 Railway"
