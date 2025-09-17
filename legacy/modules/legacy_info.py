@@ -61,7 +61,7 @@ class LegacyInfoMod(loader.Module):
             ("🕶", "<emoji document_id=5407025283456835913>📱</emoji>"),
             ("💎", "<emoji document_id=5471952986970267163>💎</emoji>"),
             ("🛡", "<emoji document_id=5422712776059534305>🌩</emoji>"),
-            ("🦈", "<emoji document_id=5201956344717936264>🦈</emoji>"),
+            ("☕️", "<emoji document_id=6025967359716497965>☕️</emoji>"),
             ("🌼", "<emoji document_id=5224219153077914783>❤️</emoji>"),
             ("🎡", "<emoji document_id=5226711870492126219>🎡</emoji>"),
             ("🐧", "<emoji document_id=5361541227604878624>🐧</emoji>"),
