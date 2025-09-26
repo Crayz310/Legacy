@@ -11,6 +11,7 @@ from .. import loader, utils, version
 import platform as lib_platform
 import getpass
 import distro
+import subprocess
 
 
 @loader.tds
@@ -28,9 +29,37 @@ class LegacyInfoMod(loader.Module):
                 "https://i.postimg.cc/9MTZgB2j/legacy-info.gif",
                 lambda: self.strings["_cfg_banner"],
             ),
+            loader.ConfigValue(
+                "neofetch_args",
+                "--stdout",
+                lambda: "Аргументы для neofetch",
+            ),
         )
 
+    async def _get_neofetch_output(self) -> str:
+        try:
+            args = self.config["neofetch_args"].split()
+            result = subprocess.run(
+                ["neofetch"] + args,
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+            if result.returncode == 0:
+                return f"{utils.escape_html(result.stdout)}"
+            else:
+                return f"Ошибка neofetch: {result.stderr}"
+        except subprocess.TimeoutExpired:
+            return "neofetch: timeout"
+        except FileNotFoundError:
+            return "neofetch не установлен"
+        except Exception as e:
+            return f"Ошибка: {str(e)}"
+
     async def _render_info(self, args: list, custom_prefix: str) -> str:
+        if "--neofetch" in args or "-n" in args:
+            return await self._get_neofetch_output()
+
         try:
             repo = git.Repo(search_parent_directories=True)
             diff = repo.git.log([f"HEAD..origin/{version.branch}", "--oneline"])
@@ -69,6 +98,9 @@ class LegacyInfoMod(loader.Module):
             ("🧨", "<emoji document_id=5379774338733994368>🧨</emoji>"),
         ]:
             platform = platform.replace(emoji, icon)
+
+        neofetch = await self._get_neofetch_output()
+
         return (
             self.config["custom_message"].format(
                 me=me,
@@ -90,6 +122,7 @@ class LegacyInfoMod(loader.Module):
                     if self._client.legacy_me.premium
                     else "🌙 <b>Legacy</b>"
                 ),
+                neofetch=neofetch,
             )
             if self.config["custom_message"] and "-d" not in args
             else (
