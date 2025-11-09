@@ -630,7 +630,7 @@ async def get_target(message: Message, arg_no: int = 0) -> typing.Optional[int]:
 
     if any(
         isinstance(entity, MessageEntityMentionName)
-        for entity in (message.entities or [])
+        for entity in message.entities or []
     ):
         e = sorted(
             filter(lambda x: isinstance(x, MessageEntityMentionName), message.entities),
@@ -809,8 +809,8 @@ async def asset_channel(
             if invite_bot:
                 if all(
                     participant.id != client.loader.inline.bot_id
-                    for participant in (
-                        await client.get_participants(d.entity, limit=100)
+                    for participant in await client.get_participants(
+                        d.entity, limit=100
                     )
                 ):
                     await fw_protect()

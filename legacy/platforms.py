@@ -23,17 +23,13 @@ class BaseHost(ABC):
                 "Host class must define name, display_name, emoji, and emoji_document_id."
             )
 
-    async def handle_request(self, request):
-        if self.is_eula_forbidden():
-            return self.get_forbidden_response()
-
     def is_eula_forbidden(self):
         if not self.multiple_sessions_per_acc:
             return True
         return False
 
     def get_forbidden_response(self):
-        return web.Response(status=403, body=f"Forbidden by {self.name} EULA")
+        return web.Response(status=403, body=f"Forbidden by {self.display_name} EULA")
 
 
 class VDS(BaseHost):
@@ -94,76 +90,74 @@ class HikkaHost(BaseHost):
 
 
 class OrangePi(BaseHost):
-    name = "ORANGEPI"
+    name = "ORANGE"
     display_name = "Orange Pi"
     emoji_document_id = 5467811234567890123
     emoji = "🍊"
 
 
 class RaspberryPi(BaseHost):
-    name = "RASPBERRYPI"
+    name = "RASPBERRY"
     display_name = "Raspberry Pi"
     emoji = "🍇"
     emoji_document_id = 5467892345678901234
 
 
 class HostManager:
+    supported_hosts = [
+        RaspberryPi,
+        HikkaHost,
+        Userland,
+        OrangePi,
+        Railway,
+        Docker,
+        Oracle,
+        Aeza,
+        VDS,
+        WSL,
+    ]
+
     def __init__(self):
         self._hosts = {}
         self._register_supported_hosts()
 
     def _register_supported_hosts(self):
-        supported_hosts = [
-            RaspberryPi,
-            HikkaHost,
-            Userland,
-            OrangePi,
-            Railway,
-            Docker,
-            Oracle,
-            Aeza,
-            VDS,
-            WSL,
-        ]
 
-        for host in supported_hosts:
+        for host in self.supported_hosts:
             try:
                 host_class = host()
                 self._hosts[host_class.name.lower()] = host_class
             except ValueError as e:
-                print(f"Warning: Skipping invalid host {host_class.__name__}: {e}")
+                print(str(e))
 
     def get_host(self, host_name):
         return self._hosts.get(host_name.lower())
 
     def _detect_by_uname(self):
-        if "oracle" in uname().release:
-            return self.get_host("oracle")
-        if "microsoft-standard" in uname().release:
-            return self.get_host("wsl")
+        for host in self._hosts:
+            if host.lower() in uname().release.lower():
+                return self.get_host(host)
         return None
 
     def _detect_by_device_tree(self):
         if os.path.isfile("/proc/device-tree/model"):
             with open("/proc/device-tree/model") as f:
                 model = f.read()
-                if "Orange" in model:
-                    return self.get_host("orangepi")
-                if "Raspberry" in model:
-                    return self.get_host("raspberrypi")
+                for host in self._hosts:
+                    if host.lower() in model.lower():
+                        return self.get_host(host)
         return None
 
     def _detect_by_hostname(self):
-        if "aeza" in socket.gethostname().lower():
-            return self.get_host("aeza")
+        for host in self._hosts:
+            if host.lower() in socket.gethostname().lower():
+                return self.get_host(host)
         return None
 
     def _detect_by_env_vars(self):
-        for host_name in self._hosts:
-            if os.environ.get(host_name.upper()):
-                return self.get_host(host_name)
-            if os.environ.get(host_name.upper().lower()):
-                return self.get_host(host_name)
+        for host in self._hosts:
+            if os.environ.get(host.upper()) or os.environ.get(host.lower()):
+                return self.get_host(host)
         return None
 
     def _get_default_host(self):
@@ -181,22 +175,6 @@ class HostManager:
             host = detect()
             if host:
                 return host
-        return None
-
-    def get_all_hosts(self):
-        return list(self._hosts.values())
-
-    def get_host_names(self):
-        return list(self._hosts.keys())
-
-    def get_emoji_document_id(self, host_name):
-        host = self.get_host(host_name)
-        if host:
-            return host.emoji_document_id
-        return None
-
-    def host_exists(self, host_name):
-        return host_name.lower() in self._hosts
 
 
 host_manager = HostManager()
