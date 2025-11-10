@@ -80,8 +80,12 @@ class Web:
     @property
     def _platform_emoji(self) -> str:
         return {
-            "vds": "https://github.com/iamcal/emoji-data/raw/master/img-apple-64/1fa90.png",
-            "docker": "https://github.com/hikariatama/assets/raw/master/spouting-whale_1f433.png",
+            "vds": (
+                "https://github.com/iamcal/emoji-data/raw/master/img-apple-64/1fa90.png"
+            ),
+            "docker": (
+                "https://github.com/hikariatama/assets/raw/master/spouting-whale_1f433.png"
+            ),
         }[("docker" if "DOCKER" in os.environ else "vds")]
 
     @aiohttp_jinja2.template("root.jinja2")
@@ -288,7 +292,7 @@ class Web:
         )
 
     async def can_add(self, request: web.Request) -> web.Response:
-        if self.client_data and "HIKKAHOST" in os.environ:
+        if self.client_data:
             return web.Response(status=403, body="Forbidden by EULA")
 
         return web.Response(status=200, body="Yes")
