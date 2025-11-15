@@ -464,7 +464,7 @@ loader:
   unloaded: "{} <b>Модуль {} выгружен.</b>"
   not_unloaded: "<emoji document_id=5210952531676504517>🚫</emoji> <b>Модуль не выгружен.</b>"
   requirements_failed: "<emoji document_id=5210952531676504517>🚫</emoji> <b>Ошибка установки зависимостей</b>"
-  requirements_installing: "<emoji document_id=5328311576736833844>🚀</emoji> <b>Устанавливаю зависимости:\n\n{}</b>"
+  requirements_installing: "<blockquote><emoji document_id=5316770651720137011>🚀</emoji> <b>Устанавливаю зависимости:</blockquote>\n\n<blockquote>{}</blockquote></b></b>"
   requirements_restart: "<emoji document_id=5875145601682771643>🚀</emoji> <b>Зависимости установлены, но нужна перезагрузка для применения</b> <code>{}</code>"
   all_modules_deleted: "<emoji document_id=5784993237412351403>✅</emoji> <b>Модули удалены</b>"
   undoc: "<emoji document_id=5427052514094619126>🤷‍♀️</emoji> Нет описания"
