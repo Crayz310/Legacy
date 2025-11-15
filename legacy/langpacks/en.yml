@@ -270,7 +270,7 @@ legacy_config:
   option_reset: "♻️ <b>Option</b> <code>{}</code> <b>of module</b> <code>{}</code> <b>has been reset to default</b>\n<b>Current: {}</b>"
   option_reset_lib: "♻️ <b>Option</b> <code>{}</code> <b>of library</b> <code>{}</code> <b>has been reset to default</b>\n<b>Current: {}</b>"
   args: "🚫 <b>You specified incorrect args</b>"
-  media_quote: "Quote media?"
+  _cfg_media_Quote: "Quote_media?"
   no_mod: "🚫 <b>Module doesn't exist</b>"
   no_option: "🚫 <b>Configuration option doesn't exist</b>"
   validation_error: "🚫 <b>You entered incorrect config value.\nError: {}</b>"
