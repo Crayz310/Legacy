@@ -681,7 +681,7 @@ class Gallery(InlineUnit):
                         return
 
                     await inline_query.answer(
-                        [InlineQueryResultPhoto(photo_url=unit["photo_url"], **args)],
+                        [InlineQueryResultPhoto(photo_url=unit["photo_url"], thumbnail_url=unit["photo_url"], **args)],
                         cache_time=0,
                     )
                 except Exception as e:
