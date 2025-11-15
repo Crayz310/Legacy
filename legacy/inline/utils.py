@@ -180,7 +180,7 @@ class Utils(InlineUnit):
                     elif "switch_inline_query_current_chat" in button:
                         line += [
                             InlineKeyboardButton(
-                                text=str(utton["text"]),
+                                text=str(button["text"]),
                                 switch_inline_query_current_chat=button[
                                     "switch_inline_query_current_chat"
                                 ],
