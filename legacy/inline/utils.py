@@ -107,7 +107,7 @@ class Utils(InlineUnit):
 
                         line += [
                             InlineKeyboardButton(
-                                text=button["text"],
+                                text=str(button["text"]),
                                 url=button["url"],
                             )
                         ]
@@ -122,7 +122,7 @@ class Utils(InlineUnit):
                     elif "callback" in button:
                         line += [
                             InlineKeyboardButton(
-                                text=button["text"],
+                                text=str(button["text"]),
                                 callback_data=button["_callback_data"],
                             )
                         ]
@@ -158,7 +158,7 @@ class Utils(InlineUnit):
                     elif "input" in button:
                         line += [
                             InlineKeyboardButton(
-                                text=button["text"],
+                                text=str(button["text"]),
                                 switch_inline_query_current_chat=button["_switch_query"]
                                 + " ",
                             )
@@ -166,21 +166,21 @@ class Utils(InlineUnit):
                     elif "data" in button:
                         line += [
                             InlineKeyboardButton(
-                                text=button["text"],
+                                text=str(button["text"]),
                                 callback_data=button["data"],
                             )
                         ]
                     elif "web_app" in button:
                         line += [
                             InlineKeyboardButton(
-                                text=button["text"],
+                                text=str(button["text"]),
                                 web_app=WebAppInfo(url=button["data"]),
                             )
                         ]
                     elif "switch_inline_query_current_chat" in button:
                         line += [
                             InlineKeyboardButton(
-                                text=button["text"],
+                                text=str(utton["text"]),
                                 switch_inline_query_current_chat=button[
                                     "switch_inline_query_current_chat"
                                 ],
@@ -189,7 +189,7 @@ class Utils(InlineUnit):
                     elif "switch_inline_query" in button:
                         line += [
                             InlineKeyboardButton(
-                                text=button["text"],
+                                text=str(button["text"]),
                                 switch_inline_query_current_chat=button[
                                     "switch_inline_query"
                                 ],
