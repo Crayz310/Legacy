@@ -63,15 +63,15 @@ from legacytl.tl.types import (Channel, Chat, ChatAdminRights, InputDocument,
                                MessageEntityBankCard, MessageEntityBlockquote,
                                MessageEntityBold, MessageEntityBotCommand,
                                MessageEntityCashtag, MessageEntityCode,
-                               MessageEntityEmail, MessageEntityHashtag,
-                               MessageEntityItalic, MessageEntityMention,
-                               MessageEntityMentionName, MessageEntityPhone,
-                               MessageEntityPre, MessageEntitySpoiler,
-                               MessageEntityStrike, MessageEntityTextUrl,
-                               MessageEntityUnderline, MessageEntityUnknown,
-                               MessageEntityUrl, MessageMediaWebPage,
-                               PeerChannel, PeerChat, PeerUser,
-                               ReactionCustomEmoji, ReactionEmoji,
+                               MessageEntityCustomEmoji, MessageEntityEmail,
+                               MessageEntityHashtag, MessageEntityItalic,
+                               MessageEntityMention, MessageEntityMentionName,
+                               MessageEntityPhone, MessageEntityPre,
+                               MessageEntitySpoiler, MessageEntityStrike,
+                               MessageEntityTextUrl, MessageEntityUnderline,
+                               MessageEntityUnknown, MessageEntityUrl,
+                               MessageMediaWebPage, PeerChannel, PeerChat,
+                               PeerUser, ReactionCustomEmoji, ReactionEmoji,
                                TypeInputMedia, UpdateNewChannelMessage, User)
 
 from ._internal import fw_protect
@@ -501,7 +501,9 @@ async def answer(
                 if not message.client.loader.inline.init_complete:
                     raise
 
-                entities = [e for e in entities]
+                entities = [
+                    e for e in entities if not isinstance(e, MessageEntityCustomEmoji)
+                ]
 
                 strings = list(smart_split(text, entities, 4096))
 
@@ -1497,7 +1499,7 @@ def remove_html(text: str, escape: bool = False, keep_emojis: bool = False) -> s
             (
                 r"(<\/?a.*?>|<\/?b>|<\/?i>|<\/?u>|<\/?strong>|<\/?em>|<\/?code>|<\/?strike>|<\/?del>|<\/?pre.*?>)"
                 if keep_emojis
-                else r"(<\/?a.*?>|<\/?b>|<\/?i>|<\/?u>|<\/?strong>|<\/?em>|<\/?code>|<\/?strike>|<\/?del>|<\/?pre.*?>|<\/?emoji.*?>|<\/?blockquote.*?>)"
+                else r"(<\/?a.*?>|<\/?b>|<\/?i>|<\/?u>|<\/?strong>|<\/?em>|<\/?code>|<\/?strike>|<\/?del>|<\/?pre.*?>|<\/?emoji.*?>)"
             ),
             "",
             text,
