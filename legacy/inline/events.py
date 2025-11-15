@@ -12,14 +12,9 @@ from asyncio import Event
 
 from aiogram.types import CallbackQuery, ChosenInlineResult
 from aiogram.types import InlineQuery as AiogramInlineQuery
-from aiogram.types import (
-    InlineQueryResultArticle,
-    InlineQueryResultDocument,
-    InlineQueryResultGif,
-    InlineQueryResultPhoto,
-    InlineQueryResultVideo,
-    InputTextMessageContent,
-)
+from aiogram.types import (InlineQueryResultArticle, InlineQueryResultDocument,
+                           InlineQueryResultGif, InlineQueryResultPhoto,
+                           InlineQueryResultVideo, InputTextMessageContent)
 from aiogram.types import Message as AiogramMessage
 
 from .. import utils
@@ -54,11 +49,14 @@ class Events(InlineUnit):
             return
 
         cmd = query.split()[0].lower()
-        if cmd in self._allmodules.inline_handlers and await self.check_inline_security(
-            func=self._allmodules.inline_handlers[cmd],
-            user=inline_query.from_user.id,
+        if (
+            cmd in self._allmodules.inline_handlers
+            and await self.check_inline_security(
+                func=self._allmodules.inline_handlers[cmd],
+                user=inline_query.from_user.id,
+            )
         ):
-            instance = InlineQuery(inline_query)
+            instance = InlineQuery(inline_query=inline_query)
 
             try:
                 if not (
@@ -108,8 +106,7 @@ class Events(InlineUnit):
                                 title=self.sanitise_text(res["title"]),
                                 description=self.sanitise_text(res.get("description")),
                                 input_message_content=InputTextMessageContent(
-                                    self.sanitise_text(res["message"]),
-                                    "HTML",
+                                    message_text=self.sanitise_text(res["message"]),
                                     disable_web_page_preview=True,
                                 ),
                                 thumb_url=res.get("thumb"),
@@ -273,7 +270,9 @@ class Events(InlineUnit):
                         + unit.get("always_allow", [])
                         + button.get("always_allow", [])
                     ):
-                        await call.answer(self.translator.getkey("inline.button403"), show_alert=True)
+                        await call.answer(
+                            self.translator.getkey("inline.button403"), show_alert=True
+                        )
                         return
 
                     try:
@@ -325,7 +324,9 @@ class Events(InlineUnit):
                 and call.from_user.id
                 not in self._custom_map[call.data].get("always_allow", [])
             ):
-                await call.answer(self.translator.getkey("inline.button403"), show_alert=True)
+                await call.answer(
+                    self.translator.getkey("inline.button403"), show_alert=True
+                )
                 return
 
             await self._custom_map[call.data]["handler"](
@@ -412,13 +413,12 @@ class Events(InlineUnit):
                         title=self.translator.getkey("inline.command").format(name),
                         description=doc,
                         input_message_content=InputTextMessageContent(
-                            (
+                            message_text=(
                                 self.translator.getkey("inline.command_msg").format(
                                     utils.escape_html(name),
                                     utils.escape_html(doc),
                                 )
                             ),
-                            "HTML",
                             disable_web_page_preview=True,
                         ),
                         thumb_url=thumb,
@@ -446,8 +446,9 @@ class Events(InlineUnit):
                         title=self.translator.getkey("inline.show_inline_cmds"),
                         description=self.translator.getkey("inline.no_inline_cmds"),
                         input_message_content=InputTextMessageContent(
-                            self.translator.getkey("inline.no_inline_cmds_msg"),
-                            "HTML",
+                            message_text=self.translator.getkey(
+                                "inline.no_inline_cmds_msg"
+                            ),
                             disable_web_page_preview=True,
                         ),
                         thumb_url=(
@@ -470,12 +471,11 @@ class Events(InlineUnit):
                         self.translator.getkey("inline.inline_cmds").format(len(_help))
                     ),
                     input_message_content=InputTextMessageContent(
-                        (
+                        message_text=(
                             self.translator.getkey("inline.inline_cmds_msg").format(
                                 "\n".join(map(lambda x: x[1], _help))
                             )
                         ),
-                        "HTML",
                         disable_web_page_preview=True,
                     ),
                     thumb_url=(

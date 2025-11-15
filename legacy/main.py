@@ -25,35 +25,29 @@
 
 import argparse
 import asyncio
-import socket
 import collections
 import contextlib
 import importlib
-import ujson
 import logging
 import os
 import random
 import signal
+import socket
 import sqlite3
 import sys
 import typing
 from getpass import getpass
 from pathlib import Path
-from legacytl.extensions.html import CUSTOM_EMOJIS
 
+import ujson
 from legacytl import events
-from legacytl.errors import (
-    ApiIdInvalidError,
-    AuthKeyDuplicatedError,
-    FloodWaitError,
-    PasswordHashInvalidError,
-    PhoneNumberInvalidError,
-    SessionPasswordNeededError,
-)
+from legacytl.errors import (ApiIdInvalidError, AuthKeyDuplicatedError,
+                             FloodWaitError, PasswordHashInvalidError,
+                             PhoneNumberInvalidError,
+                             SessionPasswordNeededError)
+from legacytl.extensions.html import CUSTOM_EMOJIS
 from legacytl.network.connection import (
-    ConnectionTcpFull,
-    ConnectionTcpMTProxyRandomizedIntermediate,
-)
+    ConnectionTcpFull, ConnectionTcpMTProxyRandomizedIntermediate)
 from legacytl.password import compute_check
 from legacytl.sessions import MemorySession, SQLiteSession
 from legacytl.tl.functions.account import GetPasswordRequest
@@ -462,9 +456,9 @@ class Legacy:
             if not get_config_key("api_id"):
                 api_id, api_hash = (
                     line.strip()
-                    for line in (Path(BASE_DIR) / "api_token.txt")
-                    .read_text()
-                    .splitlines()
+                    for line in (
+                        (Path(BASE_DIR) / "api_token.txt").read_text().splitlines()
+                    )
                 )
                 save_config_key("api_id", int(api_id))
                 save_config_key("api_hash", api_hash)
@@ -804,7 +798,10 @@ class Legacy:
             repo = git.Repo()
 
             build = utils.get_git_hash()
-            diff = repo.git.log([f"HEAD..origin/{version.branch}", "--oneline"])
+            try:
+                diff = repo.git.log([f"HEAD..origin/{version.branch}", "--oneline"])
+            except Exception:
+                diff = ""
             upd = "Update required" if diff else "Up-to-date"
 
             logo = (

@@ -11,6 +11,7 @@ from aiogram.types import CallbackQuery
 from aiogram.types import InlineQuery as AiogramInlineQuery
 from aiogram.types import InlineQueryResultArticle, InputTextMessageContent
 from aiogram.types import Message as AiogramMessage
+from pydantic import ConfigDict
 
 from .. import utils
 
@@ -19,6 +20,8 @@ logger = logging.getLogger(__name__)
 
 class InlineMessage:
     """Aiogram message, sent via inline bot"""
+
+    model_config = ConfigDict(frozen=False)
 
     def __init__(
         self,
@@ -109,36 +112,30 @@ class BotInlineMessage:
 class InlineCall(CallbackQuery, InlineMessage):
     """Modified version of classic aiogram `CallbackQuery`"""
 
+    model_config = ConfigDict(frozen=False)
+
     def __init__(
         self,
         call: CallbackQuery,
         inline_manager: "InlineManager",  # type: ignore  # noqa: F821
         unit_id: str,
     ):
-        CallbackQuery.__init__(self)
-        for attr in {
-            "id",
-            "from_user",
-            "message",
-            "inline_message_id",
-            "chat_instance",
-            "data",
-            "game_short_name",
-        }:
-            setattr(self, attr, getattr(call, attr, None))
+        model_dump = call.model_dump()
+        if "result_id" in model_dump:
+            model_dump["id"] = model_dump.pop("result_id")
+        CallbackQuery.__init__(self, **model_dump)
         self.original_call = call
         InlineMessage.__init__(self, inline_manager, unit_id, call.inline_message_id)
 
     async def delete(self):
         unit = self._units.get(self.unit_id)
         if not unit:
-            return await self.original_call.answer("Message not found", show_alert=True)
+            return await self.answer("Message not found", show_alert=True)
 
-        chat_id = unit.get("chat")
-        message_id = unit.get("message_id")
-
-        await self.inline_manager._client.delete_messages(chat_id, message_id)
-        return await self.original_call.answer("")
+        await self.inline_manager._client.delete_messages(
+            unit.get("chat"), unit.get("message_id")
+        )
+        return await self.answer("")
 
     async def answer(self, text: Optional[str] = None, *args, **kwargs):
         if text:
@@ -150,27 +147,16 @@ class InlineCall(CallbackQuery, InlineMessage):
 class BotInlineCall(CallbackQuery, BotInlineMessage):
     """Modified version of classic aiogram `CallbackQuery`"""
 
+    model_config = ConfigDict(frozen=False)
+
     def __init__(
         self,
         call: CallbackQuery,
         inline_manager: "InlineManager",  # type: ignore  # noqa: F821
         unit_id: str,
     ):
-        CallbackQuery.__init__(self)
-
-        for attr in {
-            "id",
-            "from_user",
-            "message",
-            "chat",
-            "chat_instance",
-            "data",
-            "game_short_name",
-        }:
-            setattr(self, attr, getattr(call, attr, None))
-
+        CallbackQuery.__init__(self, **call.model_dump())
         self.original_call = call
-
         BotInlineMessage.__init__(
             self,
             inline_manager,
@@ -180,8 +166,10 @@ class BotInlineCall(CallbackQuery, BotInlineMessage):
         )
 
     async def delete(self):
-        await self.bot.delete_message(self.message.chat.id, self.message.message_id)
-        return await self.original_call.answer("")
+        await self.inline_manager.bot.delete_messages(
+            chat_id=self.message.chat.id, message_ids=[self.message.message_id]
+        )
+        return await self.answer("")
 
     async def answer(self, text: Optional[str] = None, *args, **kwargs):
         if text:
@@ -193,6 +181,8 @@ class BotInlineCall(CallbackQuery, BotInlineMessage):
 class InlineUnit:
     """InlineManager extension type. For internal use only"""
 
+    model_config = ConfigDict(frozen=False)
+
     def __init__(self):
         """Made just for type specification"""
 
@@ -200,8 +190,10 @@ class InlineUnit:
 class InlineQuery(AiogramInlineQuery):
     """Modified version of original Aiogram InlineQuery"""
 
+    model_config = ConfigDict(frozen=False)
+
     def __init__(self, inline_query: AiogramInlineQuery):
-        super().__init__(self)
+        super().__init__(**inline_query.model_dump())
 
         for attr in {"id", "from_user", "query", "offset", "chat_type", "location"}:
             setattr(self, attr, getattr(inline_query, attr, None))

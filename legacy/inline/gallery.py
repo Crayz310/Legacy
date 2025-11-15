@@ -15,16 +15,11 @@ import traceback
 import typing
 from urllib.parse import urlparse
 
-from aiogram.types import (
-    CallbackQuery,
-    InlineKeyboardMarkup,
-    InlineQuery,
-    InlineQueryResultGif,
-    InlineQueryResultPhoto,
-    InputMediaAnimation,
-    InputMediaPhoto,
-)
-from aiogram.utils.exceptions import BadRequest, RetryAfter
+from aiogram.exceptions import TelegramBadRequest as BadRequest
+from aiogram.exceptions import TelegramRetryAfter as RetryAfter
+from aiogram.types import (CallbackQuery, InlineKeyboardMarkup, InlineQuery,
+                           InlineQueryResultGif, InlineQueryResultPhoto,
+                           InputMediaAnimation, InputMediaPhoto)
 from legacytl.errors.rpcerrorlist import ChatSendInlineForbiddenError
 from legacytl.extensions.html import CUSTOM_EMOJIS
 from legacytl.tl.types import Message
@@ -588,9 +583,7 @@ class Gallery(InlineUnit):
         return (
             caption
             if isinstance(caption, str)
-            else caption()
-            if callable(caption)
-            else ""
+            else caption() if callable(caption) else ""
         )
 
     def _gallery_markup(self, unit_id: str) -> InlineKeyboardMarkup:

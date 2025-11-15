@@ -20,8 +20,10 @@ import typing
 from logging.handlers import RotatingFileHandler
 
 import legacytl
-from legacytl.errors.rpcbaseerrors import ServerError, RPCError
-from aiogram.utils.exceptions import NetworkError, RetryAfter
+from aiogram.exceptions import TelegramBadRequest as BadRequest
+from aiogram.exceptions import TelegramNetworkError as NetworkError
+from aiogram.exceptions import TelegramRetryAfter as RetryAfter
+from legacytl.errors.rpcbaseerrors import RPCError, ServerError
 
 from . import utils
 from .tl_cache import CustomTelegramClient
@@ -254,7 +256,7 @@ class TelegramLogsHandler(logging.Handler):
         """Return all entries of minimum level as list of strings"""
         return [
             self.targets[0].format(record)
-            for record in (self.buffer + self.handledbuffer)
+            for record in self.buffer + self.handledbuffer
             if record.levelno >= lvl
             and (not record.legacy_caller or client_id == record.legacy_caller)
         ]

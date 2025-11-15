@@ -13,14 +13,9 @@ import time
 import traceback
 import typing
 
-from aiogram.types import (
-    CallbackQuery,
-    InlineKeyboardMarkup,
-    InlineQuery,
-    InlineQueryResultArticle,
-    InputTextMessageContent,
-)
-from aiogram.utils.exceptions import RetryAfter
+from aiogram.exceptions import TelegramRetryAfter as RetryAfter
+from aiogram.types import (CallbackQuery, InlineKeyboardMarkup, InlineQuery,
+                           InlineQueryResultArticle, InputTextMessageContent)
 from legacytl.errors.rpcerrorlist import ChatSendInlineForbiddenError
 from legacytl.extensions.html import CUSTOM_EMOJIS
 from legacytl.tl.types import Message
@@ -307,8 +302,7 @@ class List(InlineUnit):
                                 id=utils.rand(20),
                                 title="Hikka",
                                 input_message_content=InputTextMessageContent(
-                                    self.sanitise_text(unit["strings"][0]),
-                                    "HTML",
+                                    message_text=self.sanitise_text(unit["strings"][0]),
                                     disable_web_page_preview=True,
                                 ),
                                 reply_markup=self._list_markup(inline_query.query),
