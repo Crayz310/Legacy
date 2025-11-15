@@ -152,6 +152,9 @@ class InlineStuff(loader.Module):
 
     @loader.command()
     async def iauth(self, message, force: bool = False):
+        host = utils.get_current_platform() or utils._platforms.get("vds")
+        if host.get("single_session", False):
+            return await utils.answer(message, self.strings["forbid"])
         args = utils.get_args_raw(message)
         force = force or "-f" in args
 

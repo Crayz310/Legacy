@@ -5,7 +5,7 @@
 # 🔑 https://www.gnu.org/licenses/agpl-3.0.html
 
 import git
-from git import config
+import legacytl
 from legacytl.types import InputMediaWebPage
 from legacytl.utils import get_display_name
 from .. import loader, utils, version
@@ -68,17 +68,14 @@ class LegacyInfoMod(loader.Module):
             for emoji, icon in [
                 ("🍊", "<emoji document_id=5449599833973203438>🧡</emoji>"),
                 ("🍇", "<emoji document_id=5449468596952507859>💜</emoji>"),
+                ("🍌", "<emoji document_id=5091424266138682339>🍌</emoji>"),
                 ("🍀", "<emoji document_id=5395325195542078574>🍀</emoji>"),
                 ("🚂", "<emoji document_id=5359595190807962128>🚂</emoji>"),
                 ("🐳", "<emoji document_id=5431815452437257407>🐳</emoji>"),
-                ("🕶", "<emoji document_id=5407025283456835913>📱</emoji>"),
-                ("💎", "<emoji document_id=5471952986970267163>💎</emoji>"),
+                ("💎", "<emoji document_id=5983589445687841895>🖥</emoji>"),
                 ("🛡", "<emoji document_id=5422712776059534305>🌩</emoji>"),
-                ("☕️", "<emoji document_id=6025967359716497965>☕️</emoji>"),
                 ("🌼", "<emoji document_id=5224219153077914783>❤️</emoji>"),
-                ("🎡", "<emoji document_id=5226711870492126219>🎡</emoji>"),
                 ("🐧", "<emoji document_id=5361541227604878624>🐧</emoji>"),
-                ("🦊", "<emoji document_id=5283051451889756068>🦊</emoji>"),
                 ("🧨", "<emoji document_id=5379774338733994368>🧨</emoji>"),
             ]:
                 platform = platform.replace(emoji, icon)
@@ -89,6 +86,7 @@ class LegacyInfoMod(loader.Module):
             self.config["custom_message"].format(
                 me=me,
                 version=_version,
+                tlversion=f"<i>{legacytl.__version__}</i>",
                 build=build,
                 prefix=prefix,
                 platform=platform,
@@ -109,30 +107,30 @@ class LegacyInfoMod(loader.Module):
             )
             if self.config["custom_message"] and "-d" not in args
             else (
-                f"<b>{{}}</b>\n\n<b>{{}} {self.strings('owner')}:</b> {me}\n\n<b>{{}}"
+                f"<blockquote><b>{{}}</b></blockquote>\n\n<blockquote><b>{{}} {self.strings['owner']}:</b> {me}</blockquote>\n\n<blockquote><b>{{}}"
                 f" {self.strings['version']}:</b> {_version} {build}\n<b>{{}}"
                 f" {self.strings['branch']}:"
-                f"</b> <code>{version.branch}</code>\n{upd}\n\n<b>{{}}"
+                f"</b> <code>{version.branch}</code>\n{upd}</blockquote>\n\n<blockquote><b>{{}}"
                 f" {self.strings['prefix']}:</b> {prefix}\n<b>{{}}"
                 f" {self.strings['uptime']}:"
-                f"</b> {utils.formatted_uptime()}\n\n<b>{{}}"
+                f"</b> {utils.formatted_uptime()}</blockquote>\n\n<blockquote><b>{{}}"
                 f" {self.strings['cpu_usage']}:"
                 f"</b> <i>~{await utils.get_cpu_usage_async()} %</i>\n<b>{{}}"
                 f" {self.strings['ram_usage']}:"
-                f"</b> <i>~{utils.get_ram_usage()} MB</i>\n<b>{{}}</b>"
+                f"</b> <i>~{utils.get_ram_usage()} MB</i></blockquote>\n\n<blockquote><b>{{}}</b></blockquote>"
             ).format(
                 (
                     utils.get_platform_emoji()
                     if self._client.legacy_me.premium
                     else "🌙 Legacy"
                 ),
-                "<emoji document_id=5373141891321699086>😎</emoji>",
-                "<emoji document_id=5469741319330996757>💫</emoji>",
-                "<emoji document_id=5449918202718985124>🌳</emoji>",
-                "<emoji document_id=5472111548572900003>⌨️</emoji>",
-                "<emoji document_id=5451646226975955576>⌛️</emoji>",
-                "<emoji document_id=5431449001532594346>⚡️</emoji>",
-                "<emoji document_id=5359785904535774578>💼</emoji>",
+                "<emoji document_id=4904565554943099861>👾</emoji>",
+                "<emoji document_id=4904936030232117798>⚙️</emoji>",
+                "<emoji document_id=5172453033245672405>🌱</emoji>",
+                "<emoji document_id=5220053623211305785>❓</emoji>",
+                "<emoji document_id=5123230779593196220>⏰</emoji>",
+                "<emoji document_id=5085022089103016925>⚡️</emoji>",
+                "<emoji document_id=5118686540985271080>💼</emoji>",
                 platform,
             )
         )
@@ -143,7 +141,7 @@ class LegacyInfoMod(loader.Module):
         custom_prefix = self.get_prefix(message.sender_id)
         media = self.config["banner_url"]
         if self.config["media_quote"]:
-            media = InputMediaWebPage(media)
+            media = InputMediaWebPage(media, optional=True)
             await utils.answer(
                 message,
                 await self._render_info(args, custom_prefix),
@@ -157,12 +155,12 @@ class LegacyInfoMod(loader.Module):
 
     @loader.command()
     async def ubinfo(self, message):
-        await utils.answer(message, self.strings("desc"))
+        await utils.answer(message, self.strings["desc"])
 
     @loader.command()
     async def setinfo(self, message):
         if not (args := utils.get_args_html(message)):
-            return await utils.answer(message, self.strings("setinfo_no_args"))
+            return await utils.answer(message, self.strings["setinfo_no_args"])
 
         self.config["custom_message"] = args
-        await utils.answer(message, self.strings("setinfo_success"))
+        await utils.answer(message, self.strings["setinfo_success"])

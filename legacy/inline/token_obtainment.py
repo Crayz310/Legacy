@@ -48,13 +48,13 @@ class TokenObtainment(InlineUnit):
                     pass
                 else:
                     uid = utils.rand(6)
-                    username = f"@legacy_{uid}_bot"
+                    username = f"@{utils.get_version_raw()}_{uid}_bot"
             else:
                 uid = utils.rand(6)
-                username = f"@legacy_{uid}_bot"
+                username = f"@{utils.get_version_raw()}_{uid}_bot"
 
             for msg in [
-                f"Legacy {utils.get_version_raw()} Bot"[:64],
+                f"{utils.get_version_raw()}"[:64],
                 username,
                 "/setuserpic",
                 username,
@@ -183,7 +183,9 @@ class TokenObtainment(InlineUnit):
                         "legacy.inline",
                         "custom_bot",
                         False,
-                    ) and not re.search(r"@legacy_[0-9a-zA-Z]{6}_bot", button.text):
+                    ) and not re.search(
+                        r"@{utils.get_version_raw()}_[0-9a-zA-Z]{6}_bot", button.text
+                    ):
                         continue
 
                     await fw_protect()

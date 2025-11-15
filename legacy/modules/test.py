@@ -90,12 +90,17 @@ class TestMod(loader.Module):
                 validator=loader.validators.String(),
             ),
             loader.ConfigValue(
+                "media_quote",
+                True,
+                lambda: self.strings["_cfg_media_quote"],
+                validator=loader.validators.Boolean(),
+            ),
+            loader.ConfigValue(
                 "banner_url",
                 None,
                 "Banner url",
                 validator=loader.validators.Union(
-                    loader.validators.String(),
-                    loader.validators.NoneType()
+                    loader.validators.String(), loader.validators.NoneType()
                 ),
             ),
         )
@@ -414,24 +419,39 @@ class TestMod(loader.Module):
         start = time.perf_counter_ns()
         message = await utils.answer(message, self.config["ping_emoji"])
 
-        await utils.answer(
-            message,
-            self.config["ping_text"].format(
-                ping=f"{round((time.perf_counter_ns() - start) / 10**6, 3)}",
-                uptime=f"{utils.formatted_uptime()}",
-                ping_hint=(
-                    (self.config["hint"]) if random.choice([0, 0, 1]) == 1 else ""
+        if self.config["media_quote"]:
+            await utils.answer(
+                message,
+                self.config["ping_text"].format(
+                    ping=f"{round((time.perf_counter_ns() - start) / 10**6, 3)}",
+                    uptime=f"{utils.formatted_uptime()}",
+                    ping_hint=(
+                        (self.config["hint"]) if random.choice([0, 0, 1]) == 1 else ""
+                    ),
+                    hostname=lib_platform.node(),
+                    user=getpass.getuser(),
                 ),
-                hostname=lib_platform.node(),
-                user=getpass.getuser(),
-            ),
-            media=(
-                InputMediaWebPage(self.config["banner_url"])
-                if self.config["banner_url"]
-                else None
-            ),
-            invert_media=True,
-        )
+                media=(
+                    InputMediaWebPage(self.config["banner_url"], optional=True)
+                    if self.config["banner_url"]
+                    else None
+                ),
+                invert_media=True,
+            )
+        else:
+            await utils.answer_file(
+                message,
+                self.config["banner_url"],
+                self.config["ping_text"].format(
+                    ping=f"{round((time.perf_counter_ns() - start) / 10**6, 3)}",
+                    uptime=f"{utils.formatted_uptime()}",
+                    ping_hint=(
+                        (self.config["hint"]) if random.choice([0, 0, 1]) == 1 else ""
+                    ),
+                    hostname=lib_platform.node(),
+                    user=getpass.getuser(),
+                ),
+            )
 
     async def client_ready(self):
         chat, _ = await utils.asset_channel(

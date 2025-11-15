@@ -54,12 +54,34 @@ class Help(loader.Module):
                 False,
                 lambda: "Hide all core modules",
                 on_change=lambda: (
-                    self.set("hide", (
-                        list({*self.get("hide", []), *[m.__class__.__name__ for m in self.allmodules.modules if getattr(m, "__origin__", None) == "<core>"]})
-                        if self.config["hide_core_modules"]
-                        else [m for m in self.get("hide", []) if getattr(self.lookup(m), "__origin__") != "<core>"]
-                    ))
+                    self.set(
+                        "hide",
+                        (
+                            list(
+                                {
+                                    *self.get("hide", []),
+                                    *[
+                                        m.__class__.__name__
+                                        for m in self.allmodules.modules
+                                        if getattr(m, "__origin__", None) == "<core>"
+                                    ],
+                                }
+                            )
+                            if self.config["hide_core_modules"]
+                            else [
+                                m
+                                for m in self.get("hide", [])
+                                if getattr(self.lookup(m), "__origin__") != "<core>"
+                            ]
+                        ),
+                    )
                 ),
+                validator=loader.validators.Boolean(),
+            ),
+            loader.ConfigValue(
+                "show_cmds",
+                True,
+                lambda: "Displays a short list of commands next to the module",
                 validator=loader.validators.Boolean(),
             ),
         )
@@ -77,7 +99,7 @@ class Help(loader.Module):
             module_origin = module.__origin__
             module = module.__class__.__name__
 
-            if self.config["hide_core_modules"] and module_origin == '<core>':
+            if self.config["hide_core_modules"] and module_origin == "<core>":
                 continue
 
             if module in currently_hidden:
@@ -167,6 +189,11 @@ class Help(loader.Module):
                 "\n<i><emoji document_id=5879813604068298387>ℹ️</emoji> "
                 + utils.escape_html(inspect.getdoc(module))
                 + "\n</i>"
+            )
+        if isinstance(self.lookup(args), loader.Library):
+            return await utils.answer(
+                message,
+                self.strings["lib_help"].format(name),
             )
 
         commands = {
@@ -286,12 +313,13 @@ class Help(loader.Module):
                 if await self.allmodules.check_security(message, func) or force
             ]
 
-            for cmd in commands:
-                if first:
-                    tmp += f": ( {cmd}"
-                    first = False
-                else:
-                    tmp += f" | {cmd}"
+            if self.config["show_cmds"]:
+                for cmd in commands:
+                    if first:
+                        tmp += f": ( {cmd}"
+                        first = False
+                    else:
+                        tmp += f" | {cmd}"
 
             icommands = [
                 name
@@ -303,17 +331,18 @@ class Help(loader.Module):
                 or force
             ]
 
-            for cmd in icommands:
-                if first:
-                    tmp += (
-                        f": ( <emoji document_id=6030400221232501136>🤖</emoji> {cmd}"
-                    )
-                    first = False
-                else:
-                    tmp += f" | <emoji document_id=6030400221232501136>🤖</emoji> {cmd}"
+            if self.config["show_cmds"]:
+                for cmd in icommands:
+                    if first:
+                        tmp += (
+                            f": ( <emoji document_id=6030400221232501136>🤖</emoji> {cmd}"
+                        )
+                        first = False
+                    else:
+                        tmp += f" | <emoji document_id=6030400221232501136>🤖</emoji> {cmd}"
 
             if commands or icommands:
-                tmp += " )\n"
+                tmp += " )\n" if self.config["show_cmds"] else "\n"
                 if core:
                     core_ += [tmp]
                 else:
@@ -356,9 +385,7 @@ class Help(loader.Module):
         full_list = (
             core_ + plain_ + no_commands_
             if force
-            else hidden_mods + no_commands_
-            if only_hidden
-            else core_ + plain_
+            else hidden_mods + no_commands_ if only_hidden else core_ + plain_
         )
         await utils.answer(
             message,

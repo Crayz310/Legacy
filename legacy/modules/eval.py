@@ -92,6 +92,8 @@ class Evaluator(loader.Module):
         if callable(getattr(result, "stringify", None)):
             with contextlib.suppress(Exception):
                 result = str(result.stringify())
+        else:
+            result = str(result)
 
         with contextlib.suppress(MessageIdInvalidError):
             await utils.answer(

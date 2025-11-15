@@ -29,6 +29,8 @@ import functools
 import inspect
 import io
 import ujson
+import socket
+from platform import uname
 import logging
 import os
 import random
@@ -629,7 +631,7 @@ async def get_target(message: Message, arg_no: int = 0) -> typing.Optional[int]:
 
     if any(
         isinstance(entity, MessageEntityMentionName)
-        for entity in (message.entities or [])
+        for entity in message.entities or []
     ):
         e = sorted(
             filter(lambda x: isinstance(x, MessageEntityMentionName), message.entities),
@@ -808,8 +810,8 @@ async def asset_channel(
             if invite_bot:
                 if all(
                     participant.id != client.loader.inline.bot_id
-                    for participant in (
-                        await client.get_participants(d.entity, limit=100)
+                    for participant in await client.get_participants(
+                        d.entity, limit=100
                     )
                 ):
                     await fw_protect()
@@ -946,39 +948,123 @@ def get_named_platform() -> str:
     Returns formatted platform name
     :return: Platform name
     """
-    from . import main
 
-    with contextlib.suppress(Exception):
-        if os.path.isfile("/proc/device-tree/model"):
-            with open("/proc/device-tree/model") as f:
-                model = f.read()
-                if "Orange" in model:
-                    return f"🍊 {model}"
-
-                return f"🍇 {model}" if "Raspberry" in model else f"❓ {model}"
-
-    if main.IS_WSL:
-        return "🍀 WSL"
-
-    if main.IS_USERLAND:
-        return "🐧 UserLand"
-
-    if main.IS_AEZA:
-        return "🛡 Aeza"
-
-    if main.IS_RAILWAY:
-        return "🚂 Railway"
-
-    if main.IS_HIKKAHOST:
-        return "🌼 HikkaHost"
-
-    if main.IS_ORACLE:
-        return "🧨 Oracle"
-
-    if main.IS_DOCKER:
-        return "🐳 Docker"
-
+    host = get_current_platform() or _platforms.get("vds")
+    if host:
+        return f"{host.get('emoji')} {host.get('display_name')}"
     return "💎 VDS"
+
+
+_platforms = {
+    "raspberry": {
+        "display_name": "Raspberry Pi",
+        "emoji": "🍇",
+        "emoji_document_id": 5467541303938019154,
+    },
+    "banana": {
+        "display_name": "Banana Pi",
+        "emoji": "🍌",
+        "emoji_document_id": 5467541303938019154,
+    },
+    "orange": {
+        "display_name": "Orange Pi",
+        "emoji": "🍊",
+        "emoji_document_id": 5467541303938019154,
+    },
+    "hikkahost": {
+        "display_name": "HikkaHost",
+        "emoji": "🌼",
+        "emoji_document_id": 5458807006905264299,
+    },
+    "docker": {
+        "display_name": "Docker",
+        "emoji": "🐳",
+        "emoji_document_id": 5456574628933693253,
+    },
+    "wsl": {
+        "display_name": "WSL",
+        "emoji": "🍀",
+        "emoji_document_id": 5467541303938019154,
+    },
+    "aeza": {
+        "display_name": "Aeza",
+        "emoji": "🛡",
+        "emoji_document_id": 5467541303938019154,
+    },
+    "oracle": {
+        "display_name": "Oracle",
+        "emoji": "🧨",
+        "emoji_document_id": 5380110961090788815,
+    },
+    "userland": {
+        "display_name": "Userland",
+        "emoji": "🐧",
+        "emoji_document_id": 5458508523858062696,
+    },
+    "railway": {
+        "display_name": "Railway",
+        "emoji": "🚂",
+        "emoji_document_id": 5456525163795344370,
+    },
+    "vds": {
+        "display_name": "VDS",
+        "emoji": "💎",
+        "emoji_document_id": 5467541303938019154,
+    },
+}
+
+
+def get_platform(host_name):
+    return _platforms.get(host_name.lower())
+
+
+def _detect_by_uname():
+    for platform in _platforms:
+        if platform.lower() in uname().release.lower():
+            return get_platform(platform)
+    return None
+
+
+def _detect_by_device_tree():
+    if os.path.isfile("/proc/device-tree/model"):
+        with open("/proc/device-tree/model") as f:
+            model = f.read()
+            for platform in _platforms:
+                if platform.lower() in model.lower():
+                    return get_platform(platform)
+    return None
+
+
+def _detect_by_hostname():
+    for platform in _platforms:
+        if platform.lower() in socket.gethostname().lower():
+            return get_platform(platform)
+    return None
+
+
+def _detect_by_env_vars():
+    for platform in _platforms:
+        if os.environ.get(platform.upper()) or os.environ.get(platform.lower()):
+            return get_platform(platform)
+    return None
+
+
+def _get_default_platform():
+    return get_platform("vds")
+
+
+def get_current_platform():
+    detection_chain = [
+        _detect_by_uname,
+        _detect_by_device_tree,
+        _detect_by_hostname,
+        _detect_by_env_vars,
+        _get_default_platform,
+    ]
+    for detect in detection_chain:
+        host = detect()
+        if host:
+            return host
 
 
 def get_platform_emoji() -> str:
@@ -986,8 +1072,6 @@ def get_platform_emoji() -> str:
     Returns custom emoji for current platform
     :return: Emoji entity in string
     """
-    from . import main
-
     BASE = "".join(
         (
             "<emoji document_id={}>🌙</emoji>",
@@ -997,21 +1081,9 @@ def get_platform_emoji() -> str:
         )
     )
 
-    if main.IS_HIKKAHOST:
-        return BASE.format(5458807006905264299)
-
-    if main.IS_USERLAND:
-        return BASE.format(5458508523858062696)
-
-    if main.IS_RAILWAY:
-        return BASE.format(5456525163795344370)
-
-    if main.IS_ORACLE:
-        return BASE.format(5380110961090788815)
-
-    if main.IS_DOCKER:
-        return BASE.format(5456574628933693253)
-
+    host = get_current_platform()
+    if host:
+        return BASE.format(host.get("emoji_document_id", 5467541303938019154))
     return BASE.format(5467541303938019154)
 
 

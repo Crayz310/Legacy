@@ -83,23 +83,6 @@ LOGS_PATH = "https://raw.githubusercontent.com/Crayz310/Legacy/refs/heads/master
 AVATAR_PATH = os.path.join(os.getcwd(), "assets", "legacy-pfp.png")
 CONFIG_PATH = BASE_PATH / "config.json"
 
-IS_DOCKER = "DOCKER" in os.environ
-IS_RAILWAY = "RAILWAY" in os.environ
-IS_HIKKAHOST = "HIKKAHOST" in os.environ
-IS_AEZA = "aeza" in socket.gethostname()
-IS_USERLAND = "userland" in os.environ
-IS_SKIRIHOST = "SKIRIHOST" in os.environ
-IS_ORACLE = False
-IS_WSL = False
-with contextlib.suppress(Exception):
-    from platform import uname
-
-    if "oracle" in uname().release:
-        IS_ORACLE = True
-
-    if "microsoft-standard" in uname().release:
-        IS_WSL = True
-
 # fmt: off
 LATIN_MOCK = [
     "Amor", "Arbor", "Astra", "Aurum", "Bellum", "Caelum",

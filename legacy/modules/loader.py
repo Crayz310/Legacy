@@ -806,16 +806,7 @@ class LoaderMod(loader.Module):
         )
 
         def loaded_msg(use_subscribe: bool = True):
-            nonlocal \
-                modname, \
-                version, \
-                modhelp, \
-                modconf, \
-                developer, \
-                origin, \
-                subscribe, \
-                blob_link, \
-                depends_from
+            nonlocal modname, version, modhelp, modconf, developer, origin, subscribe, blob_link, depends_from
             return self.strings("loaded").format(
                 modname.strip(),
                 version,
@@ -891,13 +882,25 @@ class LoaderMod(loader.Module):
         ):
             modhelp += "\n{} <code>{}{}</code>{} {}".format(
                 "<emoji document_id=5197195523794157505>▫️</emoji>",
-                utils.escape_html(self.get_prefix(message.sender_id)),
+                utils.escape_html(
+                    self.get_prefix(
+                        message.sender_id
+                        if not isinstance(message, InlineCall)
+                        else message.from_user.id
+                    )
+                ),
                 _name,
                 (
                     " ({})".format(
                         ", ".join(
                             "<code>{}{}</code>".format(
-                                utils.escape_html(self.get_prefix(message.sender_id)),
+                                utils.escape_html(
+                                    self.get_prefix(
+                                        message.sender_id
+                                        if not isinstance(message, InlineCall)
+                                        else message.from_user.id
+                                    )
+                                ),
                                 alias,
                             )
                             for alias in self.lookup("help").find_aliases(_name)

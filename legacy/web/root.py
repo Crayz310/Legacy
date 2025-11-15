@@ -229,7 +229,8 @@ class Web:
         self._qr_login = True
 
     async def init_qr_login(self, request: web.Request) -> web.Response:
-        if self.client_data and "HIKKAHOST" in os.environ:
+        host = utils.get_current_hosting() or utils._hosts.get("vds")
+        if self.client_data and host.get("single_session", False):
             return web.Response(status=403, body="Forbidden by EULA")
 
         if not self._check_session(request):

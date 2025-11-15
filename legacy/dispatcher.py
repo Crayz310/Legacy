@@ -122,6 +122,27 @@ class CommandDispatcher:
 
         self.raw_handlers = []
 
+    def _grep(self, pattern: str, text: str, invert: bool = False, ignore_case: bool = False) -> str:
+        regex = re.compile(re.escape(pattern).strip(), (re.IGNORECASE if ignore_case else 0))
+        result = []
+
+        for line in text.splitlines():
+            match = regex.search(utils.remove_html(line).strip())
+            isMatched = bool(match)
+
+            if invert:
+                isMatched = not isMatched
+            
+            if isMatched:
+                if match:
+                    highlight = lambda m: f"<u><i>{m.group(0)}</i></u>"
+                    highlighted_line = line.replace(match.group(0), highlight(match))
+                    result.append(highlighted_line)
+                else:
+                    result.append(line)
+
+        return "\n".join(result)
+
     def _handle_grep(self, message: Message) -> Message:
         # Allow escaping grep with double stick
         if "||grep" in message.text or "|| grep" in message.text:
@@ -133,59 +154,34 @@ class CommandDispatcher:
         if getattr(message, "legacy_grepped", False):
             return message
 
-        grep = False
         if not re.search(r".+\| ?grep (.+)", message.raw_text):
             return message
 
-        grep = re.search(r".+\| ?grep (.+)", message.raw_text).group(1)
+        grep_raw_args = re.search(r".+\| ?grep (.+)", message.raw_text).group(1)
+
         message.text = re.sub(r"\| ?grep.+", "", message.text)
         message.raw_text = re.sub(r"\| ?grep.+", "", message.raw_text)
         message.message = re.sub(r"\| ?grep.+", "", message.message)
-
-        ungrep = False
-
-        if re.search(r"-v (.+)", grep):
-            ungrep = re.search(r"-v (.+)", grep).group(1)
-            grep = re.sub(r"(.+) -v .+", r"\g<1>", grep)
-
-        grep = utils.escape_html(grep).strip() if grep else False
-        ungrep = utils.escape_html(ungrep).strip() if ungrep else False
 
         old_edit = message.edit
         old_reply = message.reply
         old_respond = message.respond
 
         def process_text(text: str) -> str:
-            nonlocal grep, ungrep
-            res = []
+            grep_args = grep_raw_args.split(' ')
 
-            for line in text.split("\n"):
-                if (
-                    grep
-                    and grep in utils.remove_html(line)
-                    and (not ungrep or ungrep not in utils.remove_html(line))
-                ):
-                    res.append(
-                        utils.remove_html(line, escape=True).replace(
-                            grep, f"<u>{grep}</u>"
-                        )
-                    )
+            ignore_case = '-i' in grep_args
+            invert = '-v' in grep_args
 
-                if not grep and ungrep and ungrep not in utils.remove_html(line):
-                    res.append(utils.remove_html(line, escape=True))
+            filtered_pattern = [str(a) for a in grep_args if a not in ('-i', '-v')]
+            pattern = ' '.join(filtered_pattern) if filtered_pattern else '.*'
 
-            cont = (
-                (f"contain <b>{grep}</b>" if grep else "")
-                + (" and" if grep and ungrep else "")
-                + ((" do not contain <b>" + ungrep + "</b>") if ungrep else "")
-            )
+            grepped_text = self._grep(pattern=pattern, text=text, invert=invert, ignore_case=ignore_case)
 
-            if res:
-                text = f"<i>💬 Lines that {cont}:</i>\n" + "\n".join(res)
-            else:
-                text = f"💬 <i>No lines that {cont}</i>"
+            if not grepped_text.strip():
+                return '<emoji document_id=5237808360882977239>✂️</emoji> <b>No lines to grep</b>'
 
-            return text
+            return grepped_text
 
         async def my_edit(text, *args, **kwargs):
             text = process_text(text)
