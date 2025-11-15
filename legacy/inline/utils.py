@@ -414,13 +414,13 @@ class Utils(InlineUnit):
             media = InputFile(media)
 
         if file:
-            media = InputMediaDocument(media, caption=text, parse_mode="HTML")
+            media = InputMediaDocument(media=media, caption=text, parse_mode="HTML")
         elif photo:
-            media = InputMediaPhoto(media, caption=text, parse_mode="HTML")
+            media = InputMediaPhoto(media=media, caption=text, parse_mode="HTML")
         elif audio:
             if isinstance(audio, dict):
                 media = InputMediaAudio(
-                    audio["url"],
+                    media=audio["url"],
                     title=audio.get("title"),
                     performer=audio.get("performer"),
                     duration=audio.get("duration"),
@@ -429,14 +429,14 @@ class Utils(InlineUnit):
                 )
             else:
                 media = InputMediaAudio(
-                    audio,
+                    media=audio,
                     caption=text,
                     parse_mode="HTML",
                 )
         elif video:
-            media = InputMediaVideo(media, caption=text, parse_mode="HTML")
+            media = InputMediaVideo(media=media, caption=text, parse_mode="HTML")
         elif gif:
-            media = InputMediaAnimation(media, caption=text, parse_mode="HTML")
+            media = InputMediaAnimation(media=media, caption=text, parse_mode="HTML")
 
         if media is None and text is None and reply_markup:
             try:
