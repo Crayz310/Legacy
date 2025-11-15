@@ -1,5 +1,4 @@
 Legacy-TL-New==1.8.0
-aiofile==3.8.1
 meval==2.5
 Jinja2==3.0.3
 requests==2.27.1
