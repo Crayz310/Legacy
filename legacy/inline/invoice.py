@@ -83,6 +83,8 @@ class Invoice(InlineUnit):
                 type(prices),
             )
             return False
+        if isinstance(message, Message) and message.out:
+            await message.delete()
         unit_id = utils.rand(16)
         self._units[unit_id] = {
             "type": "invoice",
