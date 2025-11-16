@@ -35,7 +35,7 @@ class Events(InlineUnit):
         if not sp:
             return
 
-        amount = sp.total_amount // 100
+        amount = sp.total_amount
         payload = sp.invoice_payload
 
         logger.info(f"User {message.from_user.id} paid {amount} stars for {payload}")
