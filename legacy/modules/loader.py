@@ -691,7 +691,7 @@ class LoaderMod(loader.Module):
                 with contextlib.suppress(Exception):
                     self.allmodules.modules.remove(instance)
 
-                return "<emoji document_id=5454225457916420314>😖</emoji> <b>{utils.escape_html(str(e))}</b>"
+                return "<emoji document_id=5458497936763676259>😖</emoji> <b>{utils.escape_html(str(e))}</b>"
             except loader.SelfUnload as e:
                 logger.debug("Unloading %s, because it raised `SelfUnload`", instance)
                 with contextlib.suppress(Exception):
@@ -700,7 +700,7 @@ class LoaderMod(loader.Module):
                 with contextlib.suppress(Exception):
                     self.allmodules.modules.remove(instance)
 
-                return f"<emoji document_id=5454225457916420314>😖</emoji> <b>{utils.escape_html(str(e))}</b>"
+                return f"<emoji document_id=5458497936763676259>😖</emoji> <b>{utils.escape_html(str(e))}</b>"
             except loader.SelfSuspend as e:
                 logger.debug("Suspending %s, because it raised `SelfSuspend`", instance)
                 if message:
