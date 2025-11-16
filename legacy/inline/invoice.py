@@ -7,6 +7,7 @@
 # ©️ Based on Dan Gazizullin's work
 # 🌐 https://github.com/hikariatama/Hikka
 
+import contextlib
 import logging
 import typing
 
@@ -110,27 +111,28 @@ class Invoice(InlineUnit):
             await inline_query.answer([], cache_time=0)
             return
         form = self._units[unit_id]
-        results = [
-            InlineQueryResultArticle(
-                title=form["title"],
-                description=form["description"],
-                id=form["id"],
-                input_message_content=InputInvoiceMessageContent(
+        with contextlib.suppress(Exception):
+            results = [
+                InlineQueryResultArticle(
                     title=form["title"],
                     description=form["description"],
-                    payload=form["payload"],
-                    photo_url=form["photo_url"],
-                    suggested_tip_amounts=form["suggested_tip_amounts"],
-                    max_tip_amount=form["max_tip_amount"],
-                    currency=form["currency"],
-                    prices=[
-                        LabeledPrice(
-                            label=form["prices"]["label"],
-                            amount=form["prices"]["amount"],
-                        )
-                    ],
-                ),
-            )
-        ]
-        await inline_query.answer(results, cache_time=0)
+                    id=form["id"],
+                    input_message_content=InputInvoiceMessageContent(
+                        title=form["title"],
+                        description=form["description"],
+                        payload=form["payload"],
+                        photo_url=form["photo_url"],
+                        suggested_tip_amounts=form["suggested_tip_amounts"],
+                        max_tip_amount=form["max_tip_amount"],
+                        currency=form["currency"],
+                        prices=[
+                            LabeledPrice(
+                                label=form["prices"]["label"],
+                                amount=form["prices"]["amount"],
+                            )
+                        ],
+                    ),
+                )
+            ]
+            await inline_query.answer(results, cache_time=0)
         return
