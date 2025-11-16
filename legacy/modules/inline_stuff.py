@@ -188,6 +188,8 @@ class InlineStuff(loader.Module):
     async def aiogram_watcher(self, message: BotInlineMessage):
         user_id = message.from_user.id
         state = self.inline.gs(user_id)
+        if not message.text:
+            return
 
         if message.text == "/start":
             await message.answer_animation(

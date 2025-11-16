@@ -191,11 +191,6 @@ class InlineManager(
         )
 
         self._dp.message.register(
-            self._successful_payment_handler,
-            lambda msg: getattr(msg, "successful_payment", None) is not None,
-        )
-
-        self._dp.message.register(
             self._message_handler,
             lambda *_: True,
         )

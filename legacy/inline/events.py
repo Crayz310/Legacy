@@ -29,7 +29,8 @@ class Events(InlineUnit):
     async def _pre_checkout_handler(self, query: AiogramPreCheckoutQuery):
         await query.answer(ok=True)
 
-    async def _successful_payment_handler(self, message: AiogramMessage):
+    async def _message_handler(self, message: AiogramMessage):
+        """Processes incoming messages"""
         sp = message.successful_payment
         if not sp:
             return
@@ -38,9 +39,6 @@ class Events(InlineUnit):
         payload = sp.invoice_payload
 
         logger.info(f"User {message.from_user.id} paid {amount} stars for {payload}")
-
-    async def _message_handler(self, message: AiogramMessage):
-        """Processes incoming messages"""
         if message.chat.type != "private" or message.text == "/start legacy init":
             return
 
