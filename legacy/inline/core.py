@@ -186,6 +186,15 @@ class InlineManager(
             lambda _: True,
         )
 
+        self._dp.pre_checkout_query.register(
+            self._pre_checkout_handler, lambda pcq: True
+        )
+
+        self._dp.message.register(
+            self._successful_payment_handler,
+            lambda msg: getattr(msg, "successful_payment", None) is not None,
+        )
+
         self._dp.message.register(
             self._message_handler,
             lambda *_: True,
@@ -205,7 +214,11 @@ class InlineManager(
         self.bot.get_updates = new
 
         self._task = asyncio.ensure_future(
-            self._dp.start_polling(self._bot, handle_signals=False)
+            self._dp.start_polling(
+                self._bot,
+                handle_signals=False,
+                allowed_updates=self._dp.resolve_used_update_types(),
+            )
         )
         self._cleaner_task = asyncio.ensure_future(self._cleaner())
 

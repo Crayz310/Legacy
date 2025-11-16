@@ -73,18 +73,16 @@ class Invoice(InlineUnit):
         if not isinstance(amount, int):
             logger.error(
                 "Invalid type for `amount`. Expected int, got %s",
-                type(prices),
+                type(amount),
             )
             return False
 
         if not isinstance(label, str):
             logger.error(
                 "Invalid type for `label`. Expected str, got %s",
-                type(prices),
+                type(label),
             )
             return False
-        if isinstance(message, Message) and message.out:
-            await message.delete()
         unit_id = utils.rand(16)
         self._units[unit_id] = {
             "type": "invoice",
@@ -99,12 +97,19 @@ class Invoice(InlineUnit):
             "suggested_tip_amounts": suggested_tip_amounts,
             "uid": unit_id,
         }
-
-        m = await self._invoke_unit(unit_id, message)
-        del self._units[unit_id]
+        if isinstance(message, Message) and message.out:
+            await message.delete()
+            m = await self._invoke_unit(unit_id, message)
+        self._units[unit_id]["message"] = m
+        return self._units[unit_id]
 
     async def _invoice_inline_handler(self, inline_query: InlineQuery):
-        form = self._units[inline_query.query]
+        unit_id = inline_query.query
+        if unit_id not in self._units:
+            logger.error("No such unit_id in _units: %s", unit_id)
+            await inline_query.answer([], cache_time=0)
+            return
+        form = self._units[unit_id]
         results = [
             InlineQueryResultArticle(
                 title=form["title"],

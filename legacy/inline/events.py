@@ -16,6 +16,7 @@ from aiogram.types import (InlineQueryResultArticle, InlineQueryResultDocument,
                            InlineQueryResultGif, InlineQueryResultPhoto,
                            InlineQueryResultVideo, InputTextMessageContent)
 from aiogram.types import Message as AiogramMessage
+from aiogram.types import PreCheckoutQuery as AiogramPreCheckoutQuery
 
 from .. import utils
 from .types import BotInlineCall, InlineCall, InlineQuery, InlineUnit
@@ -24,6 +25,20 @@ logger = logging.getLogger(__name__)
 
 
 class Events(InlineUnit):
+
+    async def _pre_checkout_handler(self, query: AiogramPreCheckoutQuery):
+        await query.answer(ok=True)
+
+    async def _successful_payment_handler(self, message: AiogramMessage):
+        sp = message.successful_payment
+        if not sp:
+            return
+
+        amount = sp.total_amount // 100
+        payload = sp.invoice_payload
+
+        logger.info(f"User {message.from_user.id} paid {amount} stars for {payload}")
+
     async def _message_handler(self, message: AiogramMessage):
         """Processes incoming messages"""
         if message.chat.type != "private" or message.text == "/start legacy init":
