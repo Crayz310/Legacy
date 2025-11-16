@@ -198,6 +198,7 @@ class Events(InlineUnit):
                 return
 
         await self._form_inline_handler(inline_query)
+        await self._invoice_inline_handler(inline_query)
         await self._gallery_inline_handler(inline_query)
         await self._list_inline_handler(inline_query)
 

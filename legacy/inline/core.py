@@ -30,6 +30,7 @@ from .bot_pm import BotPM
 from .events import Events
 from .form import Form
 from .gallery import Gallery
+from .invoice import Invoice
 from .list import List
 from .query_gallery import QueryGallery
 from .token_obtainment import TokenObtainment
@@ -45,6 +46,7 @@ class InlineManager(
     Form,
     Gallery,
     QueryGallery,
+    Invoice,
     List,
     BotPM,
 ):
