@@ -473,19 +473,12 @@ class Utils(InlineUnit):
                         else unit.get("buttons", [])
                     ),
                 )
-            except Exception as e:
-                logger.error(str(e))
-                if query:
-                    with contextlib.suppress(Exception):
-                        await query.answer()
-
-                return False
             except RetryAfter as e:
                 logger.info("Sleeping %ss on aiogram FloodWait...", e.timeout)
                 await asyncio.sleep(e.timeout)
                 return await self._edit_unit(**utils.get_kwargs())
             except BadRequest as e:
-                if "There is no text in the message to edit" not in str(e):
+                if "there is no text in the message to edit" not in str(e):
                     raise
 
                 try:
@@ -506,6 +499,13 @@ class Utils(InlineUnit):
                     return False
                 else:
                     return True
+            except Exception as e:
+                logger.error(str(e))
+                if query:
+                    with contextlib.suppress(Exception):
+                        await query.answer()
+
+                return False
             else:
                 return True
 
