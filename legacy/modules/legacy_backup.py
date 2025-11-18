@@ -146,14 +146,11 @@ class LegacyBackupMod(loader.Module):
             outfile = io.BytesIO(result.getvalue())
             outfile.name = f"legacy-{datetime.datetime.now():%d-%m-%Y-%H-%M}.backup"
 
-            num_of_mods = len([m for m in self.allmodules.modules if getattr(m, '__origin__', None) != '<core>'])
-
             await self.inline.bot.send_document(
                 int(f"-100{self._backup_channel.id}"),
                 BufferedInputFile(outfile.getvalue(), outfile.name),
                 caption=self.strings["backup_caption"].format(
                     prefix=self.get_prefix(),
-                    num_of_modules=num_of_mods,
                 ),
                 reply_markup=self.inline.generate_markup(
                     [
@@ -168,7 +165,6 @@ class LegacyBackupMod(loader.Module):
             )
 
             self.set("last_backup", round(time.time()))
-            self.set("last_num_of_mods")
         except loader.StopLoop:
             raise
         except Exception:
@@ -202,7 +198,6 @@ class LegacyBackupMod(loader.Module):
                 call,
                 self.strings["backup_caption"].format(
                     prefix=self.get_prefix(),
-                    num_of_modules=self.get("last_num_of_mods", "?"),
                 ),
                 reply_markup=[
                     {
@@ -269,14 +264,11 @@ class LegacyBackupMod(loader.Module):
         outfile = io.BytesIO(result.getvalue())
         outfile.name = f"legacy-{datetime.datetime.now():%d-%m-%Y-%H-%M}.backup"
 
-        num_of_mods = len([m for m in self.allmodules.modules if getattr(m, '__origin__', None) != '<core>'])
-
         backup_msg = await self.inline.bot.send_document(
             int(f"-100{self._backup_channel.id}"),
             BufferedInputFile(outfile.getvalue(), outfile.name),
             caption=self.strings["backup_caption"].format(
                 prefix=self.get_prefix(message.sender_id),
-                num_of_modules=num_of_mods,
             ),
             reply_markup=self.inline.generate_markup(
                 [
@@ -289,8 +281,6 @@ class LegacyBackupMod(loader.Module):
                 ],
             ),
         )
-
-        self.set("last_num_of_mods", num_of_mods)
 
         await utils.answer(
             message,
