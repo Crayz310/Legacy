@@ -17,6 +17,16 @@ import os
 from io import BytesIO
 
 def _is_url_valid(url: str) -> bool:
+  """
+  Checks whether the string passed is a syntactically correct URL
+
+  Uses the built-in urlparse function to attempt to parse the string. Any error during parsing results in False being returned
+
+  :param url: String to be checked
+  :type url: str
+  :returns: True if the string is a valid URL, otherwise False
+  :rtype: bool
+  """
   try:
     urlparse(url)
 
@@ -25,6 +35,12 @@ def _is_url_valid(url: str) -> bool:
     return False
 
 class CustomBot(Bot):
+  """
+  Hybrid wrapper over `aiogram.Bot` for correct operation of modules that use aiogram 2.25
+
+  Extends methods for automatic processing of various types of input data
+  """
+
   def __init__(self, token: str, session: Optional[BaseSession] = None, default: Optional[DefaultBotProperties] = None, **kwargs: Any):
     super().__init__(token=token, session=session, default=default, **kwargs)
   
