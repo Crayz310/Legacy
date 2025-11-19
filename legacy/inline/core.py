@@ -17,6 +17,8 @@ from aiogram import Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums.parse_mode import ParseMode
 from aiogram.types.link_preview_options import LinkPreviewOptions
+from aiogram.exceptions import TelegramUnauthorizedError as Unauthorized
+
 from legacytl.errors.rpcerrorlist import (InputUserDeactivatedError,
                                           YouBlockedUserError)
 from legacytl.tl.functions.contacts import UnblockRequest
