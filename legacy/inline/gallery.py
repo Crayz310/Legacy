@@ -457,7 +457,7 @@ class Gallery(InlineUnit):
             )
         except RetryAfter as e:
             await call.answer(
-                f"Got FloodWait. Wait for {e.timeout} seconds",
+                f"Got FloodWait. Wait for {e.retry_after} seconds",
                 show_alert=True,
             )
         except Exception:
@@ -553,7 +553,7 @@ class Gallery(InlineUnit):
             return await self._gallery_page(call, page, unit_id)
         except RetryAfter as e:
             await call.answer(
-                f"Got FloodWait. Wait for {e.timeout} seconds",
+                f"Got FloodWait. Wait for {e.retry_after} seconds",
                 show_alert=True,
             )
             return
