@@ -12,7 +12,8 @@ import logging
 import time
 import typing
 
-from aiogram import Bot, Dispatcher
+from ..aio_custom import CustomBot as Bot
+from aiogram import Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums.parse_mode import ParseMode
 from aiogram.types.link_preview_options import LinkPreviewOptions
