@@ -31,14 +31,11 @@ class Events(InlineUnit):
 
     async def _message_handler(self, message: AiogramMessage):
         """Processes incoming messages"""
-        sp = message.successful_payment
-        if not sp:
-            return
+        if sp := message.successful_payment:
+            amount = sp.total_amount
+            payload = sp.invoice_payload
 
-        amount = sp.total_amount
-        payload = sp.invoice_payload
-
-        logger.info(f"User {message.from_user.id} paid {amount} stars for {payload}")
+            logger.info(f"User {message.from_user.id} paid {amount} stars for {payload}")
         if message.chat.type != "private" or message.text == "/start legacy init":
             return
 
