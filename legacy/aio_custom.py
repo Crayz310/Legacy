@@ -70,7 +70,7 @@ class CustomBot(Bot):
   
   async def send_photo(self, chat_id: Union[int, str], photo: Union[InputFile, str], **kwargs: Any) -> Message:
     if isinstance(photo, bytes):
-      photo = BufferedInputFile(photo)
+      photo = BufferedInputFile(photo, filename=None)
     elif isinstance(photo, BytesIO):
       photo = BufferedInputFile(photo.getvalue(), filename=(getattr(photo, "name") if hasattr(photo, "name") else None))
     elif isinstance(photo, str):
@@ -93,7 +93,7 @@ class CustomBot(Bot):
   
   async def send_video(self, chat_id: Union[int, str], video: Union[InputFile, str], thumb: Optional[Union[InputFile, str]] = None,  **kwargs: Any) -> Message:
     if isinstance(video, bytes):
-      video = BufferedInputFile(video)
+      video = BufferedInputFile(video, filename=None)
     elif isinstance(video, BytesIO):
       video = BufferedInputFile(video.getvalue(), filename=(getattr(video, "name") if hasattr(video, "name") else None))
     elif isinstance(video, str):
