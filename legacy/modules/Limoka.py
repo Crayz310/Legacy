@@ -1289,7 +1289,7 @@ class Limoka(loader.Module):
             return
 
         # Only act when external installs are enabled
-        if not self.config["external_install"]:
+        if not self.config["external_install_allowed"]:
             return
 
         try:
@@ -1415,13 +1415,13 @@ class Limoka(loader.Module):
             except Exception as e:
                 logger.error(f"Failed to delete message: {e}")
 
-            logger.info(status)
+            #logger.info(status)
 
             if status:
                 # module_name = module_path.split("/")[-1].replace(".py", "")
                 # Notify official bot about success
                 try:
-                    bot_peer = await self.client.get_entity(7538432559)
+                    bot_peer = await self.client.get_entity(8581621390)
                     await self.client.send_message(bot_peer, f"#limoka:sucsess:{message.id}")
                     # logger.info(f"Sent success confirmation to bot for message {message.id}")
                 except Exception as e:
@@ -1431,7 +1431,7 @@ class Limoka(loader.Module):
             else:
                 logger.error(f"Installation failed with status: {status}")
                 try:
-                    bot_peer = await self.client.get_entity(7538432559)
+                    bot_peer = await self.client.get_entity(8581621390)
                     await self.client.send_message(bot_peer, f"#limoka:failed:{message.id}")
                     # logger.info(f"Sent failure notification to bot for message {message.id}")
                 except Exception as e:
