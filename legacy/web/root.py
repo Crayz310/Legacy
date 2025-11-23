@@ -10,23 +10,18 @@ import asyncio
 import collections
 import functools
 import logging
+import os
 import re
 import string
 import time
-import os
 
 import aiohttp_jinja2
 import requests
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiohttp import web
-from legacytl.errors import (
-    FloodWaitError,
-    PasswordHashInvalidError,
-    PhoneCodeExpiredError,
-    PhoneCodeInvalidError,
-    SessionPasswordNeededError,
-    YouBlockedUserError,
-)
+from legacytl.errors import (FloodWaitError, PasswordHashInvalidError,
+                             PhoneCodeExpiredError, PhoneCodeInvalidError,
+                             SessionPasswordNeededError, YouBlockedUserError)
 from legacytl.password import compute_check
 from legacytl.sessions import MemorySession
 from legacytl.tl.functions.account import GetPasswordRequest
@@ -229,7 +224,7 @@ class Web:
         self._qr_login = True
 
     async def init_qr_login(self, request: web.Request) -> web.Response:
-        host = utils.get_current_hosting() or utils._hosts.get("vds")
+        host = utils.get_current_platform() or utils._hosts.get("vds")
         if self.client_data and host.get("single_session", False):
             return web.Response(status=403, body="Forbidden by EULA")
 
