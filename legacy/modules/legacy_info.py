@@ -4,16 +4,14 @@
 # You can redistribute it and/or modify it under the terms of the GNU AGPLv3
 # 🔑 https://www.gnu.org/licenses/agpl-3.0.html
 
-import getpass
-import platform as lib_platform
-
-import distro
 import git
 import legacytl
 from legacytl.types import InputMediaWebPage
 from legacytl.utils import get_display_name
-
 from .. import loader, utils, version
+import platform as lib_platform
+import getpass
+import distro
 
 
 @loader.tds
@@ -143,10 +141,11 @@ class LegacyInfoMod(loader.Module):
         custom_prefix = self.get_prefix(message.sender_id)
         media = self.config["banner_url"]
         if self.config["media_quote"]:
+            media = InputMediaWebPage(media, optional=True)
             await utils.answer(
                 message,
                 await self._render_info(args, custom_prefix),
-                media=InputMediaWebPage(media, optional=True) if media else None,
+                media=media,
                 invert_media=True,
             )
         else:

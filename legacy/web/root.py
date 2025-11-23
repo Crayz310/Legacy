@@ -10,18 +10,23 @@ import asyncio
 import collections
 import functools
 import logging
-import os
 import re
 import string
 import time
+import os
 
 import aiohttp_jinja2
 import requests
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiohttp import web
-from legacytl.errors import (FloodWaitError, PasswordHashInvalidError,
-                             PhoneCodeExpiredError, PhoneCodeInvalidError,
-                             SessionPasswordNeededError, YouBlockedUserError)
+from legacytl.errors import (
+    FloodWaitError,
+    PasswordHashInvalidError,
+    PhoneCodeExpiredError,
+    PhoneCodeInvalidError,
+    SessionPasswordNeededError,
+    YouBlockedUserError,
+)
 from legacytl.password import compute_check
 from legacytl.sessions import MemorySession
 from legacytl.tl.functions.account import GetPasswordRequest
@@ -297,7 +302,7 @@ class Web:
         if not self._check_session(request):
             return web.Response(status=401, body="Authorization required")
 
-        if self.client_data:
+        if self.client_data and "HIKKAHOST" in os.environ:
             return web.Response(status=403, body="Forbidden by EULA")
 
         if self._pending_client:
