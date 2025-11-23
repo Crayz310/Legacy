@@ -11,12 +11,13 @@ import typing
 import grapheme
 from emoji import get_emoji_unicode_dict
 
+from legacy.types import ListLike
+
 from . import utils
 from .translations import SUPPORTED_LANGUAGES, translator
 
-ConfigAllowedTypes = typing.Union[tuple, list, str, int, bool, None]
-
-ALLOWED_EMOJIS = set(get_emoji_unicode_dict("en").values())
+emoji_dict = get_emoji_unicode_dict("en")
+ALLOWED_EMOJIS = set(emoji_dict.values()) if emoji_dict else []
 
 
 class ValidationError(Exception):
@@ -48,7 +49,7 @@ class Validator:
         self,
         validator: callable,
         doc: typing.Optional[typing.Union[str, dict]] = None,
-        _internal_id: typing.Optional[int] = None,
+        _internal_id: typing.Optional[typing.Union[int, str]] = None,
     ):
         self.validate = validator
 
@@ -73,7 +74,7 @@ class Boolean(Validator):
         )
 
     @staticmethod
-    def _validate(value: ConfigAllowedTypes, /) -> bool:
+    def _validate(value, /) -> bool:
         true = ["True", "true", "1", 1, True, "yes", "Yes", "on", "On", "y", "Y"]
         false = ["False", "false", "0", 0, False, "no", "No", "off", "Off", "n", "N"]
         if value not in true + false:
@@ -167,12 +168,12 @@ class Integer(Validator):
 
     @staticmethod
     def _validate(
-        value: ConfigAllowedTypes,
+        value,
         /,
         *,
-        digits: int,
-        minimum: int,
-        maximum: int,
+        digits: typing.Optional[int],
+        minimum: typing.Optional[int],
+        maximum: typing.Optional[int],
     ) -> typing.Union[int, None]:
         try:
             value = int(str(value).strip())
@@ -202,7 +203,7 @@ class Choice(Validator):
 
     def __init__(
         self,
-        possible_values: typing.List[ConfigAllowedTypes],
+        possible_values,
         /,
     ):
         super().__init__(
@@ -216,11 +217,11 @@ class Choice(Validator):
 
     @staticmethod
     def _validate(
-        value: ConfigAllowedTypes,
+        value,
         /,
         *,
-        possible_values: typing.List[ConfigAllowedTypes],
-    ) -> ConfigAllowedTypes:
+        possible_values,
+    ):
         if value not in possible_values:
             raise ValidationError(
                 f"Passed value ({value}) is not one of the following:"
@@ -238,7 +239,7 @@ class MultiChoice(Validator):
 
     def __init__(
         self,
-        possible_values: typing.List[ConfigAllowedTypes],
+        possible_values,
         /,
     ):
         possible = " / ".join(list(map(str, possible_values)))
@@ -250,11 +251,11 @@ class MultiChoice(Validator):
 
     @staticmethod
     def _validate(
-        value: typing.List[ConfigAllowedTypes],
+        value,
         /,
         *,
-        possible_values: typing.List[ConfigAllowedTypes],
-    ) -> typing.List[ConfigAllowedTypes]:
+        possible_values,
+    ):
         if not isinstance(value, (list, tuple)):
             value = [value]
 
@@ -328,14 +329,14 @@ class Series(Validator):
 
     @staticmethod
     def _validate(
-        value: ConfigAllowedTypes,
+        value,
         /,
         *,
         validator: typing.Optional[Validator] = None,
         min_len: typing.Optional[int] = None,
         max_len: typing.Optional[int] = None,
         fixed_len: typing.Optional[int] = None,
-    ) -> typing.List[ConfigAllowedTypes]:
+    ):
         if not isinstance(value, (list, tuple, set)):
             value = str(value).split(",")
 
@@ -385,7 +386,7 @@ class Link(Validator):
         )
 
     @staticmethod
-    def _validate(value: ConfigAllowedTypes, /) -> str:
+    def _validate(value, /) -> str:
         try:
             if not utils.check_url(value):
                 raise Exception("Invalid URL")
@@ -439,7 +440,7 @@ class String(Validator):
 
     @staticmethod
     def _validate(
-        value: ConfigAllowedTypes,
+        value,
         /,
         *,
         length: typing.Optional[int],
@@ -488,10 +489,10 @@ class RegExp(Validator):
         description: typing.Optional[typing.Union[dict, str]] = None,
     ):
         if not flags:
-            flags = 0
+            flags = re.RegexFlag(0)
 
         try:
-            re.compile(regex, flags=flags)
+            re.compile(regex, flags=re.RegexFlag(0))
         except re.error as e:
             raise Exception(f"{regex} is not a valid regex") from e
 
@@ -511,12 +512,12 @@ class RegExp(Validator):
 
     @staticmethod
     def _validate(
-        value: ConfigAllowedTypes,
+        value,
         /,
         *,
         regex: str,
-        flags: typing.Optional[re.RegexFlag],
-    ) -> str:
+        flags: re.RegexFlag = re.RegexFlag(0),
+    ):
         if not re.match(regex, str(value), flags=flags):
             raise ValidationError(f"Passed value ({value}) must follow pattern {regex}")
 
@@ -585,7 +586,7 @@ class Float(Validator):
 
     @staticmethod
     def _validate(
-        value: ConfigAllowedTypes,
+        value,
         /,
         *,
         minimum: typing.Optional[float] = None,
@@ -614,7 +615,7 @@ class TelegramID(Validator):
         )
 
     @staticmethod
-    def _validate(value: ConfigAllowedTypes, /) -> int:
+    def _validate(value, /) -> int:
         e = ValidationError(f"Passed value ({value}) is not a valid telegram id")
 
         try:
@@ -653,11 +654,11 @@ class Union(Validator):
 
     @staticmethod
     def _validate(
-        value: ConfigAllowedTypes,
+        value,
         /,
         *,
-        validators: list,
-    ) -> ConfigAllowedTypes:
+        validators: ListLike,
+    ):
         for validator in validators:
             try:
                 return validator.validate(value)
@@ -676,7 +677,7 @@ class NoneType(Validator):
         )
 
     @staticmethod
-    def _validate(value: ConfigAllowedTypes, /) -> None:
+    def _validate(value, /) -> None:
         if not value:
             raise ValidationError(f"Passed value ({value}) is not None")
 
@@ -696,11 +697,11 @@ class Hidden(Validator):
 
     @staticmethod
     def _validate(
-        value: ConfigAllowedTypes,
+        value,
         /,
         *,
         validator: Validator,
-    ) -> ConfigAllowedTypes:
+    ):
         return validator.validate(value)
 
 
@@ -744,7 +745,7 @@ class Emoji(Validator):
 
     @staticmethod
     def _validate(
-        value: ConfigAllowedTypes,
+        value,
         /,
         *,
         length: typing.Optional[int],
@@ -794,11 +795,11 @@ class EntityLike(RegExp):
 
     @staticmethod
     def _validate(
-        value: ConfigAllowedTypes,
+        value,
         /,
         *,
         regex: str,
-        flags: typing.Optional[re.RegexFlag],
+        flags: re.RegexFlag = re.RegexFlag(0),
     ) -> typing.Union[str, int]:
         value = super()._validate(value, regex=regex, flags=flags)
 
@@ -808,10 +809,10 @@ class EntityLike(RegExp):
 
             value = int(value)
 
-        if value.startswith("https://t.me/"):
-            value = value.split("https://t.me/")[1]
+        if str(value).startswith("https://t.me/"):
+            value = str(value).split("https://t.me/")[1]
 
-        if not value.startswith("@"):
+        if not str(value).startswith("@"):
             value = f"@{value}"
 
         return value

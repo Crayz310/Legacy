@@ -27,8 +27,8 @@ import contextlib
 import logging
 import os
 import re
-import typing
 import signal
+import typing
 
 import legacytl
 
@@ -72,8 +72,8 @@ async def sleep_for_task(func: callable, data: bytes, delay: float):
 class MessageEditor:
     def __init__(
         self,
-        message: legacytl.tl.types.Message,
-        command: str,
+        message,
+        command,
         config,
         strings,
         request_message,
@@ -127,24 +127,22 @@ class MessageEditor:
 
 class SudoMessageEditor(MessageEditor):
     # Let's just hope these are safe to parse
-    PASS_REQ = [
-        "[sudo] password for",
-        "[sudo] пароль для"
-    ]
+    PASS_REQ = ["[sudo] password for", "[sudo] пароль для"]
     WRONG_PASS = [
         r"\[sudo\] password for (.*): Sorry, try again\.",
-        r"\[sudo\] пароль для (.*): Попробуйте ещё раз.\."
+        r"\[sudo\] пароль для (.*): Попробуйте ещё раз.\.",
     ]
     TOO_MANY_TRIES = [
         r"\[sudo\] password for (.*): sudo: [0-9]+ incorrect password attempts",
         r"\[sudo\] пароль для (.*): sudo: [0-9]+ неправильные попытки ввода пароля"
     ]  # fmt: skip
 
-    def __init__(self, message, command, config, strings, request_message):
+    def __init__(self, message, command, config, strings, request_message, client):
         super().__init__(message, command, config, strings, request_message)
         self.process = None
         self.state = 0
         self.authmsg = None
+        self._client = client
 
     def update_process(self, process):
         logger.debug("got sproc obj %s", process)
@@ -174,7 +172,7 @@ class SudoMessageEditor(MessageEditor):
 
         if any(lastlines[0] == p for p in self.PASS_REQ) and self.state == 0:
             logger.debug("Success to find sudo log!")
-            text = self.strings("auth_needed").format(self.message.client.legacy_me.id)
+            text = self.strings("auth_needed").format(self._client.legacy_me.id)
 
             try:
                 await utils.answer(self.message, text)
@@ -185,14 +183,14 @@ class SudoMessageEditor(MessageEditor):
             command = "<code>" + utils.escape_html(self.command) + "</code>"
             user = utils.escape_html(lastlines[1][:-1])
 
-            self.authmsg = await self.message.client.send_message(
+            self.authmsg = await self._client.send_message(
                 "me",
                 self.strings("auth_msg").format(command, user),
             )
             logger.debug("sent message to self")
 
-            self.message.client.remove_event_handler(self.on_message_edited)
-            self.message.client.add_event_handler(
+            self._client.remove_event_handler(self.on_message_edited)
+            self._client.add_event_handler(
                 self.on_message_edited,
                 legacytl.events.messageedited.MessageEdited(chats=["me"]),
             )
@@ -262,7 +260,7 @@ class TerminalMod(loader.Module):
             loader.ConfigValue(
                 "FLOOD_WAIT_PROTECT",
                 2,
-                lambda: self.strings("fw_protect"),
+                lambda: self.strings["fw_protect"],
                 validator=loader.validators.Integer(minimum=0),
             ),
         )
@@ -290,7 +288,7 @@ class TerminalMod(loader.Module):
 
     async def run_command(
         self,
-        message: legacytl.tl.types.Message,
+        message: legacytl.types.Message,
         cmd: str,
         editor: typing.Optional[MessageEditor] = None,
     ):
@@ -308,7 +306,9 @@ class TerminalMod(loader.Module):
                 cmd = " ".join([cmd.split(" ", 1)[0], "-S", cmd.split(" ", 1)[1]])
 
         sproc = await asyncio.create_subprocess_exec(
-            "/bin/bash", "-c", cmd,
+            "/bin/bash",
+            "-c",
+            cmd,
             stdin=asyncio.subprocess.PIPE,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
@@ -317,7 +317,9 @@ class TerminalMod(loader.Module):
         )
 
         if editor is None:
-            editor = SudoMessageEditor(message, cmd, self.config, self.strings, message)
+            editor = SudoMessageEditor(
+                message, cmd, self.config, self.strings, message, self._client
+            )
 
         editor.update_process(sproc)
 
@@ -344,12 +346,14 @@ class TerminalMod(loader.Module):
     @loader.command()
     async def terminatecmd(self, message):
         if not message.is_reply:
-            await utils.answer(message, self.strings("what_to_kill"))
+            await utils.answer(message, self.strings["what_to_kill"])
             return
 
         if hash_msg(await message.get_reply_message()) in self.activecmds:
             try:
-                proc_to_kill = self.activecmds[hash_msg(await message.get_reply_message())] 
+                proc_to_kill = self.activecmds[
+                    hash_msg(await message.get_reply_message())
+                ]
 
                 if "-f" not in utils.get_args_raw(message):
                     os.killpg(proc_to_kill.pid, signal.SIGTERM)
@@ -357,8 +361,8 @@ class TerminalMod(loader.Module):
                     os.killpg(proc_to_kill.pid, signal.SIGKILL)
             except Exception:
                 logger.exception("Killing process failed")
-                await utils.answer(message, self.strings("kill_fail"))
+                await utils.answer(message, self.strings["kill_fail"])
             else:
-                await utils.answer(message, self.strings("killed"))
+                await utils.answer(message, self.strings["killed"])
         else:
-            await utils.answer(message, self.strings("no_cmd"))
+            await utils.answer(message, self.strings["no_cmd"])

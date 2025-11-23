@@ -22,26 +22,15 @@ from dataclasses import dataclass, field
 from importlib.abc import SourceLoader
 
 import requests
+from aiogram.types import Message as BotMessage
 from legacytl.hints import EntityLike
 from legacytl.tl.functions.account import UpdateNotifySettingsRequest
-from legacytl.tl.types import (
-    Channel,
-    ChannelFull,
-    InputPeerNotifySettings,
-    Message,
-    UserFull,
-)
+from legacytl.tl.types import (Channel, ChannelFull, InputPeerNotifySettings,
+                               Message, UserFull)
 
 from ._reference_finder import replace_all_refs
-from aiogram.types import Message as BotMessage
-from .inline.types import (
-    BotInlineCall,
-    BotInlineMessage,
-    InlineCall,
-    InlineMessage,
-    InlineQuery,
-    InlineUnit,
-)
+from .inline.types import (BotInlineCall, BotInlineMessage, InlineCall,
+                           InlineMessage, InlineQuery, InlineUnit)
 from .pointers import PointerDict, PointerList
 
 __all__ = [
@@ -626,7 +615,7 @@ class Library:
     ) -> JSONSerializable:
         return self._db.get(self.__class__.__name__, key, default)
 
-    def _lib_set(self, key: str, value: JSONSerializable) -> bool:
+    def _lib_set(self, key: str, value: JSONSerializable):
         self._db.set(self.__class__.__name__, key, value)
 
     def _lib_pointer(

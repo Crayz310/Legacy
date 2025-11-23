@@ -12,8 +12,6 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-
-# ===== Dependencies from requirements.txt =====
 Legacy-TL-New = "1.8.0"
 meval = "2.5"
 Jinja2 = "3.0.3"
@@ -32,12 +30,6 @@ whoosh = "2.7.4"
 distro = "1.9.0"
 uvloop = "0.21.0"
 ujson = "5.11.0"
-
-# ===== Removed deps (не было в requirements) =====
-# tgcrypto
-# hikka-tl-new
-# rsa
-# aiohttp (в requirements нет явного, но aiogram 3.x тянет сам)
 
 [build-system]
 requires = ["poetry-core"]
