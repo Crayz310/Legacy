@@ -6,6 +6,7 @@ __pycache__/
 limoka_search/
 # C extensions
 *.so
+poetry.lock
 
 # Distribution / packaging
 .Python

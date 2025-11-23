@@ -3,32 +3,41 @@ extend-exclude = "loaded_modules"
 preview = true
 
 [tool.poetry]
-name = "hikka"
-version = "1.6.7"
+name = "legacy"
+version = "ReGenesis"
 description = "Telegram userbot focused on developer convenience"
-authors = ["codrago, t.me/codrago"]
+authors = ["xdesai, t.me/xdesai", "ebed_tg, t.me/ebed_tg"]
 license = "GNU AGPLv3"
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-aiofile = "3.8.1"
-gitpython = "3.1.27"
+
+# ===== Dependencies from requirements.txt =====
+Legacy-TL-New = "1.8.0"
 meval = "2.5"
-aiohttp-jinja2 = "1.5"
-aiohttp = "3.8.3"
-jinja2 = "3.0.3"
+Jinja2 = "3.0.3"
 requests = "2.27.1"
-aiogram = "2.19"
+aiohttp_jinja2 = "1.6"
+aiofile = "3.9.0"
+aiogram = "3.22.0"
 grapheme = "0.6.0"
 emoji = "2.1.0"
 werkzeug = "2.2.2"
-psutil = "5.9.4"
-tgcrypto = "1.2.5"
-hikka-tl-new = "2.0.8"
-ruamel-yaml = "0.17.21"
-rsa = "4.9"
+psutil = "6.0.0"
+"ruamel.yaml" = "0.17.21"
+aiopsutil = "0.1.0"
+GitPython = "3.1.44"
+whoosh = "2.7.4"
+distro = "1.9.0"
+uvloop = "0.21.0"
+ujson = "5.11.0"
 
+# ===== Removed deps (не было в requirements) =====
+# tgcrypto
+# hikka-tl-new
+# rsa
+# aiohttp (в requirements нет явного, но aiogram 3.x тянет сам)
 
 [build-system]
 requires = ["poetry-core"]
