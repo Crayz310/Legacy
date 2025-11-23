@@ -7,9 +7,9 @@
 import ast
 import asyncio
 import contextlib
+import difflib
 import functools
 import importlib
-import difflib
 import inspect
 import io
 import logging
@@ -691,7 +691,7 @@ class LoaderMod(loader.Module):
                 with contextlib.suppress(Exception):
                     self.allmodules.modules.remove(instance)
 
-                return "<emoji document_id=5454225457916420314>😖</emoji> <b>{utils.escape_html(str(e))}</b>"
+                return "<emoji document_id=5458497936763676259>😖</emoji> <b>{utils.escape_html(str(e))}</b>"
             except loader.SelfUnload as e:
                 logger.debug("Unloading %s, because it raised `SelfUnload`", instance)
                 with contextlib.suppress(Exception):
@@ -700,7 +700,7 @@ class LoaderMod(loader.Module):
                 with contextlib.suppress(Exception):
                     self.allmodules.modules.remove(instance)
 
-                return f"<emoji document_id=5454225457916420314>😖</emoji> <b>{utils.escape_html(str(e))}</b>"
+                return f"<emoji document_id=5458497936763676259>😖</emoji> <b>{utils.escape_html(str(e))}</b>"
             except loader.SelfSuspend as e:
                 logger.debug("Suspending %s, because it raised `SelfSuspend`", instance)
                 if message:
@@ -1028,6 +1028,8 @@ class LoaderMod(loader.Module):
         msg = []
         reply_markup = []
         self.unloaded = []
+        successful_unload = []
+        failed_unload = []
 
         for instance in instances:
             if isinstance(instance, list):
@@ -1044,8 +1046,8 @@ class LoaderMod(loader.Module):
                     )
                 continue
             if issubclass(instance.__class__, loader.Library):
-                msg.append(self.strings["cannot_unload_lib"])
-
+                self.allmodules.libraries.remove(instance)
+                successful_unload.append(instance.__class__.__name__)
             try:
                 worked = await self.allmodules.unload_module(
                     instance.__class__.__name__
@@ -1064,17 +1066,31 @@ class LoaderMod(loader.Module):
             )
 
             if worked:
-                msg.append(
-                    self.strings["unloaded"].format(
-                        "<emoji document_id=5784993237412351403>✅</emoji>",
-                        ", ".join([mod for mod in worked]),
-                    )
+                successful_unload.append(instance.__class__.__name__)
+            elif not isinstance(instance, bool):
+                failed_unload.append(instance.__class__.__name__)
+        if successful_unload:
+            msg.append(
+                self.strings["unloaded"].format(
+                    "<emoji document_id=5408832111773757273>🗑</emoji>",
+                    ", ".join([mod for mod in successful_unload]),
                 )
-            else:
-                msg.append(self.strings["not_unloaded"])
+            )
+        if failed_unload:
+            msg.append(
+                self.strings["not_unloaded"].format(
+                    "<emoji document_id=5348514879558926674>👎</emoji>",
+                    ", ".join([mod for mod in failed_unload]),
+                )
+            )
         if reply_markup:
             msg.append(self.strings["several_same_modules"])
-
+        if not msg:
+            msg.append(
+                self.strings["not_unloaded"].format(
+                    "<emoji document_id=5348514879558926674>👎</emoji>", "Unknown"
+                )
+            )
         await utils.answer(message, "\n".join(msg), reply_markup=reply_markup)
 
     @loader.command()

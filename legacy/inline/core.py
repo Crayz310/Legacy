@@ -12,10 +12,15 @@ import logging
 import time
 import typing
 
-from aiogram import Bot, Dispatcher
-from aiogram.types import ParseMode
-from aiogram.utils.exceptions import TerminatedByOtherGetUpdates, Unauthorized
-from legacytl.errors.rpcerrorlist import InputUserDeactivatedError, YouBlockedUserError
+from ..aio_custom import CustomBot as Bot
+from aiogram import Dispatcher
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums.parse_mode import ParseMode
+from aiogram.types.link_preview_options import LinkPreviewOptions
+from aiogram.exceptions import TelegramUnauthorizedError as Unauthorized
+
+from legacytl.errors.rpcerrorlist import (InputUserDeactivatedError,
+                                          YouBlockedUserError)
 from legacytl.tl.functions.contacts import UnblockRequest
 from legacytl.tl.types import Message
 from legacytl.utils import get_display_name
@@ -28,6 +33,7 @@ from .bot_pm import BotPM
 from .events import Events
 from .form import Form
 from .gallery import Gallery
+from .invoice import Invoice
 from .list import List
 from .query_gallery import QueryGallery
 from .token_obtainment import TokenObtainment
@@ -43,6 +49,7 @@ class InlineManager(
     Form,
     Gallery,
     QueryGallery,
+    Invoice,
     List,
     BotPM,
 ):
@@ -122,10 +129,15 @@ class InlineManager(
 
         self.init_complete = True
 
-        self.bot = Bot(token=self._token, parse_mode=ParseMode.HTML)
-        Bot.set_current(self.bot)
+        self.bot = Bot(
+            token=self._token,
+            default=DefaultBotProperties(
+                parse_mode=ParseMode.HTML,
+                link_preview=LinkPreviewOptions(is_disabled=True),
+            ),
+        )
         self._bot = self.bot
-        self._dp = Dispatcher(self.bot)
+        self._dp = Dispatcher()
 
         try:
             bot_me = await self.bot.get_me()
@@ -162,25 +174,28 @@ class InlineManager(
 
         await self._client.delete_messages(self.bot_username, m)
 
-        self._dp.register_inline_handler(
+        self._dp.inline_query.register(
             self._inline_handler,
             lambda _: True,
         )
 
-        self._dp.register_callback_query_handler(
+        self._dp.callback_query.register(
             self._callback_query_handler,
             lambda _: True,
         )
 
-        self._dp.register_chosen_inline_handler(
+        self._dp.chosen_inline_result.register(
             self._chosen_inline_handler,
             lambda _: True,
         )
 
-        self._dp.register_message_handler(
+        self._dp.pre_checkout_query.register(
+            self._pre_checkout_handler, lambda pcq: True
+        )
+
+        self._dp.message.register(
             self._message_handler,
             lambda *_: True,
-            content_types=["any"],
         )
 
         old = self.bot.get_updates
@@ -190,15 +205,19 @@ class InlineManager(
             nonlocal revoke, old
             try:
                 return await old(*args, **kwargs)
-            except TerminatedByOtherGetUpdates:
-                await revoke()
-            except Unauthorized:
-                logger.critical("Got Unauthorized")
+            except Exception as e:
+                logger.critical(str(e))
                 await self._stop()
 
         self.bot.get_updates = new
 
-        self._task = asyncio.ensure_future(self._dp.start_polling())
+        self._task = asyncio.ensure_future(
+            self._dp.start_polling(
+                self._bot,
+                handle_signals=False,
+                allowed_updates=self._dp.resolve_used_update_types(),
+            )
+        )
         self._cleaner_task = asyncio.ensure_future(self._cleaner())
 
     async def _stop(self):

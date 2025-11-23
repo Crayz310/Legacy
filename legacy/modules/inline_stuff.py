@@ -4,18 +4,18 @@
 # You can redistribute it and/or modify it under the terms of the GNU AGPLv3
 # 🔑 https://www.gnu.org/licenses/agpl-3.0.html
 
-import re
-import string
 import logging
 import os
-import aiohttp
+import re
+import string
 
+import aiohttp
 from legacytl.errors.rpcerrorlist import YouBlockedUserError
 from legacytl.tl.functions.contacts import UnblockRequest
 
 from .. import loader, utils
-from ..inline.types import BotInlineMessage
 from ..auth_manager import AuthManager
+from ..inline.types import BotInlineMessage
 
 logger = logging.getLogger(__name__)
 
@@ -188,6 +188,8 @@ class InlineStuff(loader.Module):
     async def aiogram_watcher(self, message: BotInlineMessage):
         user_id = message.from_user.id
         state = self.inline.gs(user_id)
+        if not message.text:
+            return
 
         if message.text == "/start":
             await message.answer_animation(

@@ -16,17 +16,11 @@ from asyncio import Event
 from urllib.parse import urlparse
 
 import grapheme
-from aiogram.types import (
-    InlineQuery,
-    InlineQueryResultArticle,
-    InlineQueryResultAudio,
-    InlineQueryResultDocument,
-    InlineQueryResultGif,
-    InlineQueryResultLocation,
-    InlineQueryResultPhoto,
-    InlineQueryResultVideo,
-    InputTextMessageContent,
-)
+from aiogram.types import (InlineQuery, InlineQueryResultArticle,
+                           InlineQueryResultAudio, InlineQueryResultDocument,
+                           InlineQueryResultGif, InlineQueryResultLocation,
+                           InlineQueryResultPhoto, InlineQueryResultVideo,
+                           InputTextMessageContent)
 from legacytl.errors.rpcerrorlist import ChatSendInlineForbiddenError
 from legacytl.extensions.html import CUSTOM_EMOJIS
 from legacytl.tl.types import Message
@@ -411,14 +405,13 @@ class Form(InlineUnit):
                                     )
                                 ),
                                 input_message_content=InputTextMessageContent(
-                                    (
+                                    message_text=(
                                         "🔄 <b>Transferring value to"
                                         " userbot...</b>\n<i>This message will be"
                                         " deleted automatically</i>"
                                         if inline_query.from_user.id == self._me
                                         else "🔄 <b>Transferring value to userbot...</b>"
                                     ),
-                                    "HTML",
                                     disable_web_page_preview=True,
                                 ),
                             )
@@ -445,7 +438,7 @@ class Form(InlineUnit):
                             caption=form.get("text"),
                             parse_mode="HTML",
                             photo_url=form["photo"],
-                            thumb_url=(
+                            thumbnail_url=(
                                 "https://img.icons8.com/cotton/452/moon-satellite.png"
                             ),
                             reply_markup=self.generate_markup(
@@ -464,7 +457,7 @@ class Form(InlineUnit):
                             caption=form.get("text"),
                             parse_mode="HTML",
                             gif_url=form["gif"],
-                            thumb_url=(
+                            thumbnail_url=(
                                 "https://img.icons8.com/cotton/452/moon-satellite.png"
                             ),
                             reply_markup=self.generate_markup(
@@ -484,7 +477,7 @@ class Form(InlineUnit):
                             caption=form.get("text"),
                             parse_mode="HTML",
                             video_url=form["video"],
-                            thumb_url=(
+                            thumbnail_url=(
                                 "https://img.icons8.com/cotton/452/moon-satellite.png"
                             ),
                             mime_type="video/mp4",
@@ -553,8 +546,7 @@ class Form(InlineUnit):
                             id=utils.rand(20),
                             title="Hikka",
                             input_message_content=InputTextMessageContent(
-                                form["text"],
-                                "HTML",
+                                message_text=form["text"],
                                 disable_web_page_preview=True,
                             ),
                             reply_markup=self.generate_markup(inline_query.query),

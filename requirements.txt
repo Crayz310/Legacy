@@ -1,11 +1,10 @@
 Legacy-TL-New==1.8.0
-aiofile==3.8.1
 meval==2.5
-aiohttp_jinja2==1.5
-aiohttp==3.8.3
 Jinja2==3.0.3
 requests==2.27.1
-aiogram==2.25.2
+aiohttp_jinja2==1.6
+aiofile==3.9.0
+aiogram==3.22.0
 grapheme==0.6.0
 emoji==2.1.0
 werkzeug==2.2.2

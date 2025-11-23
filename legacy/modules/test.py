@@ -4,17 +4,17 @@
 # You can redistribute it and/or modify it under the terms of the GNU AGPLv3
 # 🔑 https://www.gnu.org/licenses/agpl-3.0.html
 
+import getpass
 import inspect
 import logging
 import os
+import platform as lib_platform
 import random
 import time
 import typing
 from io import BytesIO
-import platform as lib_platform
-import getpass
 
-from legacytl.tl.types import Message, InputMediaWebPage
+from legacytl.tl.types import InputMediaWebPage, Message
 
 from .. import loader, main, utils
 from ..inline.types import InlineCall
@@ -415,7 +415,7 @@ class TestMod(loader.Module):
             await utils.answer(message, self.strings("suspend_invalid_time"))
 
     @loader.command()
-    async def ping(self, message: Message):
+    async def ping(self, message):
         start = time.perf_counter_ns()
         message = await utils.answer(message, self.config["ping_emoji"])
 

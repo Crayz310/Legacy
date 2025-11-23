@@ -32,9 +32,8 @@ def deps():
 
 
 def start():
-    from . import main
+    from . import log, main
     from ._internal import restart
-    from . import log
 
     if (
         getpass.getuser() == "root"

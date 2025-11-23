@@ -28,77 +28,51 @@ import contextlib
 import functools
 import inspect
 import io
-import ujson
-import socket
-from platform import uname
 import logging
 import os
 import random
 import re
 import shlex
 import signal
+import socket
 import string
 import time
 import typing
 from datetime import timedelta
+from platform import uname
 from urllib.parse import urlparse
 
 import git
 import grapheme
 import legacytl
 import requests
+import ujson
 from aiogram.types import Message as AiogramMessage
 from legacytl import hints
 from legacytl.tl.custom.message import Message
 from legacytl.tl.functions.account import UpdateNotifySettingsRequest
-from legacytl.tl.functions.channels import (
-    CreateChannelRequest,
-    EditAdminRequest,
-    EditPhotoRequest,
-    InviteToChannelRequest,
-)
-from legacytl.tl.functions.messages import (
-    GetDialogFiltersRequest,
-    SetHistoryTTLRequest,
-    UpdateDialogFilterRequest,
-    SendReactionRequest,
-)
-from legacytl.tl.types import (
-    Channel,
-    Chat,
-    ChatAdminRights,
-    InputDocument,
-    InputPeerNotifySettings,
-    MessageEntityBankCard,
-    MessageEntityBlockquote,
-    MessageEntityBold,
-    MessageEntityBotCommand,
-    MessageEntityCashtag,
-    MessageEntityCode,
-    MessageEntityEmail,
-    MessageEntityHashtag,
-    InputMediaWebPage,
-    TypeInputMedia,
-    MessageEntityItalic,
-    MessageEntityMention,
-    MessageEntityMentionName,
-    MessageEntityPhone,
-    MessageEntityPre,
-    MessageEntitySpoiler,
-    MessageEntityStrike,
-    MessageEntityTextUrl,
-    MessageEntityUnderline,
-    MessageEntityUnknown,
-    MessageEntityUrl,
-    MessageMediaWebPage,
-    PeerChannel,
-    PeerChat,
-    PeerUser,
-    UpdateNewChannelMessage,
-    User,
-    ReactionEmoji,
-    ReactionCustomEmoji,
-)
+from legacytl.tl.functions.channels import (CreateChannelRequest,
+                                            EditAdminRequest, EditPhotoRequest,
+                                            InviteToChannelRequest)
+from legacytl.tl.functions.messages import (GetDialogFiltersRequest,
+                                            SendReactionRequest,
+                                            SetHistoryTTLRequest,
+                                            UpdateDialogFilterRequest)
+from legacytl.tl.types import (Channel, Chat, ChatAdminRights, InputDocument,
+                               InputMediaWebPage, InputPeerNotifySettings,
+                               MessageEntityBankCard, MessageEntityBlockquote,
+                               MessageEntityBold, MessageEntityBotCommand,
+                               MessageEntityCashtag, MessageEntityCode,
+                               MessageEntityCustomEmoji, MessageEntityEmail,
+                               MessageEntityHashtag, MessageEntityItalic,
+                               MessageEntityMention, MessageEntityMentionName,
+                               MessageEntityPhone, MessageEntityPre,
+                               MessageEntitySpoiler, MessageEntityStrike,
+                               MessageEntityTextUrl, MessageEntityUnderline,
+                               MessageEntityUnknown, MessageEntityUrl,
+                               MessageMediaWebPage, PeerChannel, PeerChat,
+                               PeerUser, ReactionCustomEmoji, ReactionEmoji,
+                               TypeInputMedia, UpdateNewChannelMessage, User)
 
 from ._internal import fw_protect
 from .inline.types import BotInlineCall, InlineCall, InlineMessage
@@ -528,9 +502,7 @@ async def answer(
                     raise
 
                 entities = [
-                    e
-                    for e in entities
-                    if not isinstance(e, legacytl.tl.types.MessageEntityBlockquote)
+                    e for e in entities if not isinstance(e, MessageEntityCustomEmoji)
                 ]
 
                 strings = list(smart_split(text, entities, 4096))
@@ -1525,9 +1497,9 @@ def remove_html(text: str, escape: bool = False, keep_emojis: bool = False) -> s
     return (escape_html if escape else str)(
         re.sub(
             (
-                r"(<\/?a.*?>|<\/?b>|<\/?i>|<\/?u>|<\/?strong>|<\/?em>|<\/?code>|<\/?strike>|<\/?del>|<\/?pre.*?>|<\/?blockquote.*?>)"
+                r"(<\/?a.*?>|<\/?b>|<\/?i>|<\/?u>|<\/?strong>|<\/?em>|<\/?code>|<\/?strike>|<\/?del>|<\/?pre.*?>)"
                 if keep_emojis
-                else r"(<\/?a.*?>|<\/?b>|<\/?i>|<\/?u>|<\/?strong>|<\/?em>|<\/?code>|<\/?strike>|<\/?del>|<\/?pre.*?>|<\/?emoji.*?>|<\/?blockquote.*?>)"
+                else r"(<\/?a.*?>|<\/?b>|<\/?i>|<\/?u>|<\/?strong>|<\/?em>|<\/?code>|<\/?strike>|<\/?del>|<\/?pre.*?>|<\/?emoji.*?>)"
             ),
             "",
             text,

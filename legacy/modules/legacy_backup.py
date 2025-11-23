@@ -8,15 +8,16 @@ import asyncio
 import contextlib
 import datetime
 import io
-import ujson
 import logging
 import os
 import time
 import zipfile
 from pathlib import Path
 
+import ujson
+from aiogram.types import BufferedInputFile
 
-from .. import loader, utils, main
+from .. import loader, main, utils
 from ..inline.types import BotInlineCall
 
 logger = logging.getLogger(__name__)
@@ -147,10 +148,9 @@ class LegacyBackupMod(loader.Module):
 
             await self.inline.bot.send_document(
                 int(f"-100{self._backup_channel.id}"),
-                outfile,
+                BufferedInputFile(outfile.getvalue(), outfile.name),
                 caption=self.strings["backup_caption"].format(
                     prefix=self.get_prefix(),
-                    num_of_modules=f"{len([m for m in self.allmodules.modules if getattr(m, '__origin__', None) != '<core>'])}",
                 ),
                 reply_markup=self.inline.generate_markup(
                     [
@@ -193,8 +193,19 @@ class LegacyBackupMod(loader.Module):
             )
             return
 
-        # ToDo
         if call.data == "legacy/backup/restore/cancel":
+            await utils.answer(
+                call,
+                self.strings["backup_caption"].format(
+                    prefix=self.get_prefix(),
+                ),
+                reply_markup=[
+                    {
+                        "text": self.strings["restore_this"],
+                        "data": "legacy/backup/restore/confirm",
+                    },
+                ],
+            )
             return
 
         file = await (
@@ -255,10 +266,9 @@ class LegacyBackupMod(loader.Module):
 
         backup_msg = await self.inline.bot.send_document(
             int(f"-100{self._backup_channel.id}"),
-            outfile,
+            BufferedInputFile(outfile.getvalue(), outfile.name),
             caption=self.strings["backup_caption"].format(
                 prefix=self.get_prefix(message.sender_id),
-                num_of_modules=f"{len([m for m in self.allmodules.modules if getattr(m, '__origin__', None) != '<core>'])}",
             ),
             reply_markup=self.inline.generate_markup(
                 [
