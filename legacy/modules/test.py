@@ -431,7 +431,7 @@ class TestMod(loader.Module):
                     hostname=lib_platform.node(),
                     user=getpass.getuser(),
                 ),
-                media=(
+                file=(
                     InputMediaWebPage(self.config["banner_url"], optional=True)
                     if self.config["banner_url"]
                     else None

@@ -79,7 +79,7 @@ class CoreMod(loader.Module):
                 (legacytl.__version__),
                 (py_ver),
             ),
-            media=InputMediaWebPage(
+            file=InputMediaWebPage(
                 "https://i.postimg.cc/90QXwWJN/legacy-userbot.gif", optional=True
             ),
             invert_media=True,
