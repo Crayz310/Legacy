@@ -96,7 +96,6 @@ from legacytl.tl.types import (
     PeerUser,
     ReactionCustomEmoji,
     ReactionEmoji,
-    TypeInputMedia,
     UpdateNewChannelMessage,
     User,
 )
@@ -558,6 +557,7 @@ async def answer(
                 return result
 
         if edit:
+            kwargs.pop("file")
             result = await message.edit(
                 text,
                 parse_mode=lambda t: (t, entities),
@@ -568,7 +568,6 @@ async def answer(
             result = await message.respond(
                 text,
                 parse_mode=lambda t: (t, entities),
-                file=file,
                 **kwargs,
             )
     elif isinstance(response, Message):
