@@ -1463,4 +1463,3 @@ class Limoka(loader.Module):
                 await message.delete()
             except Exception:
                 pass
-

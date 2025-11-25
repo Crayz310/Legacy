@@ -448,7 +448,6 @@ async def answer(
     message: typing.Union[Message, InlineCall, InlineMessage],
     response: str,
     *,
-    media: typing.Optional[TypeInputMedia] = None,
     reply_markup: typing.Optional[LegacyReplyMarkup] = None,
     **kwargs,
 ) -> typing.Union[InlineCall, InlineMessage, Message]:
@@ -562,14 +561,14 @@ async def answer(
             result = await message.edit(
                 text,
                 parse_mode=lambda t: (t, entities),
-                media=media,
+                media=file,
                 **kwargs,
             )
         else:
             result = await message.respond(
                 text,
                 parse_mode=lambda t: (t, entities),
-                file=media,
+                file=file,
                 **kwargs,
             )
     elif isinstance(response, Message):
