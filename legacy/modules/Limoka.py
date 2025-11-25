@@ -229,7 +229,7 @@ class Limoka(loader.Module):
             (
                 "<emoji document_id=5188311512791393083>🔎</emoji> Limoka имеет лучший поиск*!"
                 "\n <i>* В сравнении с предыдущей версией Limoka</i>"
-            )
+            ),
         ],
         "inline404": "Не найдено",
         "inline?": "Запрос слишком короткий / не найден",
@@ -297,7 +297,7 @@ class Limoka(loader.Module):
                 True,
                 lambda: "If enabled, module installation can be handled via external Limoka bot (@limoka_bbot) for better reliability.",
                 validator=loader.validators.Boolean(),
-            ) 
+            ),
         )
         self.name = self.strings["name"]
         self._invalid_banners = set()
@@ -995,7 +995,7 @@ class Limoka(loader.Module):
             buttons.append(
                 [
                     {
-                        "text": f"{i+1}. {name}",
+                        "text": f"{i + 1}. {name}",
                         "callback": self._display_module_from_global,
                         "args": (path, query, result),
                     }
@@ -1214,7 +1214,7 @@ class Limoka(loader.Module):
             buttons.append(
                 [
                     {
-                        "text": f"{i+1}. {name}",
+                        "text": f"{i + 1}. {name}",
                         "callback": self._display_module_from_global,
                         "args": (path, query, result),
                     }
@@ -1255,7 +1255,7 @@ class Limoka(loader.Module):
             return
 
         formatted_history = [
-            f"{i+1}. <code>{utils.escape_html(h)}</code>"
+            f"{i + 1}. <code>{utils.escape_html(h)}</code>"
             for i, h in enumerate(history[-10:])
         ]
         await utils.answer(
@@ -1296,9 +1296,12 @@ class Limoka(loader.Module):
             # Prefer raw_text/message when available to preserve original
             # formatting (some clients provide parsed .text that loses
             # tags/links). Fall back to .text if needed.
-            clean_text = getattr(message, "raw_text", None) or getattr(
-                message, "message", None
-            ) or message.text or ""
+            clean_text = (
+                getattr(message, "raw_text", None)
+                or getattr(message, "message", None)
+                or message.text
+                or ""
+            )
 
             if message.entities:
                 from html import unescape
@@ -1350,7 +1353,10 @@ class Limoka(loader.Module):
                 if not found:
                     logger.warning(f"Module not found after cleanup: {module_path}")
                     await utils.answer(
-                        message, self.strings["watcher_module_not_found"].format(path=html.escape(module_path))
+                        message,
+                        self.strings["watcher_module_not_found"].format(
+                            path=html.escape(module_path)
+                        ),
                     )
                     # Keep original message in chat for inspection.
                     return
@@ -1365,7 +1371,9 @@ class Limoka(loader.Module):
                 import base64
                 from cryptography.hazmat.primitives.asymmetric import ed25519
 
-                PUB_KEY_B64 = "MCowBQYDK2VwAyEA1ltSnqtf3pGBuctuAYqHivCXsaRtKOVxavai7yin7ZE="
+                PUB_KEY_B64 = (
+                    "MCowBQYDK2VwAyEA1ltSnqtf3pGBuctuAYqHivCXsaRtKOVxavai7yin7ZE="
+                )
                 der_bytes = base64.b64decode(PUB_KEY_B64)
                 raw_pubkey = der_bytes[-32:]
 
@@ -1374,8 +1382,12 @@ class Limoka(loader.Module):
                 async with aiohttp.ClientSession() as session:
                     async with session.get(module_url, timeout=10) as resp:
                         if resp.status != 200:
-                            logger.error(f"Failed to fetch module for verification: {module_url} (HTTP {resp.status})")
-                            await utils.answer(message, self.strings["watcher_loader_missing"])
+                            logger.error(
+                                f"Failed to fetch module for verification: {module_url} (HTTP {resp.status})"
+                            )
+                            await utils.answer(
+                                message, self.strings["watcher_loader_missing"]
+                            )
                             return
                         module_bytes = await resp.read()
 
@@ -1415,14 +1427,16 @@ class Limoka(loader.Module):
             except Exception as e:
                 logger.error(f"Failed to delete message: {e}")
 
-            #logger.info(status)
+            # logger.info(status)
 
             if status:
                 # module_name = module_path.split("/")[-1].replace(".py", "")
                 # Notify official bot about success
                 try:
                     bot_peer = await self.client.get_entity(8581621390)
-                    await self.client.send_message(bot_peer, f"#limoka:sucsess:{message.id}")
+                    await self.client.send_message(
+                        bot_peer, f"#limoka:sucsess:{message.id}"
+                    )
                     # logger.info(f"Sent success confirmation to bot for message {message.id}")
                 except Exception as e:
                     logger.error(f"Failed to send success confirmation: {e}")
@@ -1432,7 +1446,9 @@ class Limoka(loader.Module):
                 logger.error(f"Installation failed with status: {status}")
                 try:
                     bot_peer = await self.client.get_entity(8581621390)
-                    await self.client.send_message(bot_peer, f"#limoka:failed:{message.id}")
+                    await self.client.send_message(
+                        bot_peer, f"#limoka:failed:{message.id}"
+                    )
                     # logger.info(f"Sent failure notification to bot for message {message.id}")
                 except Exception as e:
                     logger.error(f"Failed to send failure notification: {e}")
@@ -1440,8 +1456,11 @@ class Limoka(loader.Module):
         except Exception as e:
             logger.exception(f"CRITICAL ERROR in secure_install_watcher: {e}")
             try:
-                await utils.answer(message, self.strings["watcher_critical"].format(error=str(e)[:100]))
+                await utils.answer(
+                    message, self.strings["watcher_critical"].format(error=str(e)[:100])
+                )
                 await asyncio.sleep(5)
                 await message.delete()
             except Exception:
                 pass
+

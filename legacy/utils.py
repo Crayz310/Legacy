@@ -51,28 +51,55 @@ from aiogram.types import Message as AiogramMessage
 from legacytl import hints
 from legacytl.tl.custom.message import Message
 from legacytl.tl.functions.account import UpdateNotifySettingsRequest
-from legacytl.tl.functions.channels import (CreateChannelRequest,
-                                            EditAdminRequest, EditPhotoRequest,
-                                            InviteToChannelRequest)
-from legacytl.tl.functions.messages import (GetDialogFiltersRequest,
-                                            SendReactionRequest,
-                                            SetHistoryTTLRequest,
-                                            UpdateDialogFilterRequest)
-from legacytl.tl.types import (Channel, Chat, ChatAdminRights, InputDocument,
-                               InputMediaWebPage, InputPeerNotifySettings,
-                               MessageEntityBankCard, MessageEntityBlockquote,
-                               MessageEntityBold, MessageEntityBotCommand,
-                               MessageEntityCashtag, MessageEntityCode,
-                               MessageEntityCustomEmoji, MessageEntityEmail,
-                               MessageEntityHashtag, MessageEntityItalic,
-                               MessageEntityMention, MessageEntityMentionName,
-                               MessageEntityPhone, MessageEntityPre,
-                               MessageEntitySpoiler, MessageEntityStrike,
-                               MessageEntityTextUrl, MessageEntityUnderline,
-                               MessageEntityUnknown, MessageEntityUrl,
-                               MessageMediaWebPage, PeerChannel, PeerChat,
-                               PeerUser, ReactionCustomEmoji, ReactionEmoji,
-                               TypeInputMedia, UpdateNewChannelMessage, User)
+from legacytl.tl.functions.channels import (
+    CreateChannelRequest,
+    EditAdminRequest,
+    EditPhotoRequest,
+    InviteToChannelRequest,
+)
+from legacytl.tl.functions.messages import (
+    GetDialogFiltersRequest,
+    SendReactionRequest,
+    SetHistoryTTLRequest,
+    UpdateDialogFilterRequest,
+)
+from legacytl.tl.types import (
+    Channel,
+    Chat,
+    ChatAdminRights,
+    InputDocument,
+    InputMediaWebPage,
+    InputPeerNotifySettings,
+    MessageEntityBankCard,
+    MessageEntityBlockquote,
+    MessageEntityBold,
+    MessageEntityBotCommand,
+    MessageEntityCashtag,
+    MessageEntityCode,
+    MessageEntityCustomEmoji,
+    MessageEntityEmail,
+    MessageEntityHashtag,
+    MessageEntityItalic,
+    MessageEntityMention,
+    MessageEntityMentionName,
+    MessageEntityPhone,
+    MessageEntityPre,
+    MessageEntitySpoiler,
+    MessageEntityStrike,
+    MessageEntityTextUrl,
+    MessageEntityUnderline,
+    MessageEntityUnknown,
+    MessageEntityUrl,
+    MessageMediaWebPage,
+    PeerChannel,
+    PeerChat,
+    PeerUser,
+    ReactionCustomEmoji,
+    ReactionEmoji,
+    TypeInputMedia,
+    UpdateNewChannelMessage,
+    User,
+)
 
 from ._internal import fw_protect
 from .inline.types import BotInlineCall, InlineCall, InlineMessage

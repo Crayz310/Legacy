@@ -30,16 +30,18 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class AuthManager:
     """
     Handles user authentication for Telegram using legacytl (Telethon-based client)
-    
+
     Features:
         - Sends authentication codes via Telegram
         - Signs in with code and optional 2FA password
         - Manages pending client state
         - Finalizes and stores the authenticated session
     """
+
     def __init__(self):
         """
         Initializes the authentication manager with API and connection settings
@@ -120,12 +122,12 @@ class AuthManager:
     async def sign_in(self, phone: str, code: str, password: str = None):
         """
         Attempts to sign in using the provided code and optionally a 2FA password
-        
+
         Args:
             phone (str): The user's phone number
             code (str): The authentication code received from Telegram
             password (str, optional): The 2FA password if required
-        
+
         Raises:
             ValueError: For invalid inputs or authentication failures
             RuntimeError: For flood wait or unexpected internal errors
@@ -137,7 +139,7 @@ class AuthManager:
         if not parsed_phone:
             raise ValueError("Invalid phone number")
 
-        og_code = code.replace('.', '')
+        og_code = code.replace(".", "")
         if len(og_code) != 5 or not og_code.isdigit():
             raise ValueError("Invalid code format")
 

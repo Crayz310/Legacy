@@ -20,7 +20,6 @@ import typing
 from logging.handlers import RotatingFileHandler
 
 import legacytl
-from aiogram.exceptions import TelegramBadRequest as BadRequest
 from aiogram.exceptions import TelegramNetworkError as NetworkError
 from aiogram.exceptions import TelegramRetryAfter as RetryAfter
 from legacytl.errors.rpcbaseerrors import RPCError, ServerError

@@ -6,9 +6,9 @@ ENV DOCKER=true \
 
 RUN apt update && \
     apt install -y --no-install-recommends \
-        curl libcairo2 git ffmpeg \
-        libavcodec-dev libavutil-dev libavformat-dev libswscale-dev libavdevice-dev \
-        gcc python3-dev
+    curl libcairo2 git ffmpeg \
+    libavcodec-dev libavutil-dev libavformat-dev libswscale-dev libavdevice-dev \
+    gcc python3-dev
 
 
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \

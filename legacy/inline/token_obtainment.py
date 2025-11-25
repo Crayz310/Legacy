@@ -174,9 +174,7 @@ class TokenObtainment(InlineUnit):
                         "legacy.inline", "custom_bot", False
                     ) and self._db.get(
                         "legacy.inline", "custom_bot", False
-                    ) != button.text.strip(
-                        "@"
-                    ):
+                    ) != button.text.strip("@"):
                         continue
 
                     if not self._db.get(

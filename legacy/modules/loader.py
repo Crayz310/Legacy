@@ -806,7 +806,16 @@ class LoaderMod(loader.Module):
         )
 
         def loaded_msg(use_subscribe: bool = True):
-            nonlocal modname, version, modhelp, modconf, developer, origin, subscribe, blob_link, depends_from
+            nonlocal \
+                modname, \
+                version, \
+                modhelp, \
+                modconf, \
+                developer, \
+                origin, \
+                subscribe, \
+                blob_link, \
+                depends_from
             return self.strings("loaded").format(
                 modname.strip(),
                 version,

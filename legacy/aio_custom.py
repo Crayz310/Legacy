@@ -12,8 +12,14 @@ from urllib.parse import urlparse
 from aiogram import Bot
 from aiogram.client.default import DefaultBotProperties
 from aiogram.client.session.base import BaseSession
-from aiogram.types import (BufferedInputFile, FSInputFile, InputFile,
-                           InputFileUnion, Message, URLInputFile)
+from aiogram.types import (
+    BufferedInputFile,
+    FSInputFile,
+    InputFile,
+    InputFileUnion,
+    Message,
+    URLInputFile,
+)
 
 
 def _is_url_valid(url: str) -> bool:
@@ -35,7 +41,7 @@ def _is_url_valid(url: str) -> bool:
         return False
 
 
-def _validate_file_type(document, filename):
+def _validate_file_type(document, filename: Optional[str] = None):
     if isinstance(document, bytes):
         document = BufferedInputFile(document, filename=filename)
     elif isinstance(document, BytesIO):
@@ -67,7 +73,7 @@ class CustomBot(Bot):
         token: str,
         session: Optional[BaseSession] = None,
         default: Optional[DefaultBotProperties] = None,
-        **kwargs: Any
+        **kwargs: Any,
     ):
         super().__init__(token=token, session=session, default=default, **kwargs)
 
@@ -77,7 +83,7 @@ class CustomBot(Bot):
         document: Union[InputFile, str],
         thumb: Optional[Union[InputFile, str]] = None,
         filename: Optional[str] = None,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> Message:
         document = _validate_file_type(document, filename)
 
@@ -91,10 +97,9 @@ class CustomBot(Bot):
         self,
         chat_id: Union[int, str],
         photo: Union[InputFile, str],
-        filename: Optional[str] = None,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> Message:
-        photo = _validate_file_type(photo, filename)
+        photo = _validate_file_type(photo)
 
         params = {"chat_id": chat_id, "photo": photo}
 
@@ -107,10 +112,9 @@ class CustomBot(Bot):
         chat_id: Union[int, str],
         video: Union[InputFile, str],
         thumb: Optional[Union[InputFile, str]] = None,
-        filename: Optional[str] = None,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> Message:
-        video = _validate_file_type(video, filename)
+        video = _validate_file_type(video)
 
         params = {"chat_id": chat_id, "video": video, "thumbnail": thumb}
 
@@ -123,10 +127,9 @@ class CustomBot(Bot):
         chat_id: Union[int, str],
         photo: Union[InputFile, str],
         thumb: Optional[Union[InputFile, str]] = None,
-        filename: Optional[str] = None,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> bool:
-        photo = _validate_file_type(photo, filename)
+        photo = _validate_file_type(photo)
 
         params = {"chat_id": chat_id, "photo": photo}
 

@@ -41,13 +41,19 @@ from pathlib import Path
 
 import ujson
 from legacytl import events
-from legacytl.errors import (ApiIdInvalidError, AuthKeyDuplicatedError,
-                             FloodWaitError, PasswordHashInvalidError,
-                             PhoneNumberInvalidError,
-                             SessionPasswordNeededError)
+from legacytl.errors import (
+    ApiIdInvalidError,
+    AuthKeyDuplicatedError,
+    FloodWaitError,
+    PasswordHashInvalidError,
+    PhoneNumberInvalidError,
+    SessionPasswordNeededError,
+)
 from legacytl.extensions.html import CUSTOM_EMOJIS
 from legacytl.network.connection import (
-    ConnectionTcpFull, ConnectionTcpMTProxyRandomizedIntermediate)
+    ConnectionTcpFull,
+    ConnectionTcpMTProxyRandomizedIntermediate,
+)
 from legacytl.password import compute_check
 from legacytl.sessions import MemorySession, SQLiteSession
 from legacytl.tl.functions.account import GetPasswordRequest

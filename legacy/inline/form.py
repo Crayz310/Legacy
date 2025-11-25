@@ -16,11 +16,17 @@ from asyncio import Event
 from urllib.parse import urlparse
 
 import grapheme
-from aiogram.types import (InlineQuery, InlineQueryResultArticle,
-                           InlineQueryResultAudio, InlineQueryResultDocument,
-                           InlineQueryResultGif, InlineQueryResultLocation,
-                           InlineQueryResultPhoto, InlineQueryResultVideo,
-                           InputTextMessageContent)
+from aiogram.types import (
+    InlineQuery,
+    InlineQueryResultArticle,
+    InlineQueryResultAudio,
+    InlineQueryResultDocument,
+    InlineQueryResultGif,
+    InlineQueryResultLocation,
+    InlineQueryResultPhoto,
+    InlineQueryResultVideo,
+    InputTextMessageContent,
+)
 from legacytl.errors.rpcerrorlist import ChatSendInlineForbiddenError
 from legacytl.extensions.html import CUSTOM_EMOJIS
 from legacytl.tl.types import Message

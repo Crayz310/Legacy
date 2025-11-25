@@ -5,7 +5,7 @@
 # 🔑 https://www.gnu.org/licenses/agpl-3.0.html
 
 import logging
-from typing import Optional, Union
+from typing import Optional
 
 from aiogram.types import CallbackQuery
 from aiogram.types import InlineQuery as AiogramInlineQuery
@@ -123,7 +123,7 @@ class InlineCall(CallbackQuery, InlineMessage):
         model_dump = call.model_dump()
         if "result_id" in model_dump:
             model_dump["id"] = model_dump.pop("result_id")
-        model_dump["chat_instance"] = "" #idk but works
+        model_dump["chat_instance"] = ""  # idk but works
         CallbackQuery.__init__(self, **model_dump)
         self.original_call = call
         InlineMessage.__init__(self, inline_manager, unit_id, call.inline_message_id)

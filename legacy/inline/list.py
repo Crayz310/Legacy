@@ -14,8 +14,13 @@ import traceback
 import typing
 
 from aiogram.exceptions import TelegramRetryAfter as RetryAfter
-from aiogram.types import (CallbackQuery, InlineKeyboardMarkup, InlineQuery,
-                           InlineQueryResultArticle, InputTextMessageContent)
+from aiogram.types import (
+    CallbackQuery,
+    InlineKeyboardMarkup,
+    InlineQuery,
+    InlineQueryResultArticle,
+    InputTextMessageContent,
+)
 from legacytl.errors.rpcerrorlist import ChatSendInlineForbiddenError
 from legacytl.extensions.html import CUSTOM_EMOJIS
 from legacytl.tl.types import Message

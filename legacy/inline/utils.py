@@ -18,11 +18,19 @@ from urllib.parse import urlparse
 
 from aiogram.exceptions import TelegramBadRequest as BadRequest
 from aiogram.exceptions import TelegramRetryAfter as RetryAfter
-from aiogram.types import (CallbackQuery, CopyTextButton, InlineKeyboardButton,
-                           InlineKeyboardMarkup, InputFile,
-                           InputMediaAnimation, InputMediaAudio,
-                           InputMediaDocument, InputMediaPhoto,
-                           InputMediaVideo, WebAppInfo)
+from aiogram.types import (
+    CallbackQuery,
+    CopyTextButton,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    InputFile,
+    InputMediaAnimation,
+    InputMediaAudio,
+    InputMediaDocument,
+    InputMediaPhoto,
+    InputMediaVideo,
+    WebAppInfo,
+)
 
 from .. import utils
 from ..types import LegacyReplyMarkup

@@ -25,12 +25,23 @@ import requests
 from aiogram.types import Message as BotMessage
 from legacytl.hints import EntityLike
 from legacytl.tl.functions.account import UpdateNotifySettingsRequest
-from legacytl.tl.types import (Channel, ChannelFull, InputPeerNotifySettings,
-                               Message, UserFull)
+from legacytl.tl.types import (
+    Channel,
+    ChannelFull,
+    InputPeerNotifySettings,
+    Message,
+    UserFull,
+)
 
 from ._reference_finder import replace_all_refs
-from .inline.types import (BotInlineCall, BotInlineMessage, InlineCall,
-                           InlineMessage, InlineQuery, InlineUnit)
+from .inline.types import (
+    BotInlineCall,
+    BotInlineMessage,
+    InlineCall,
+    InlineMessage,
+    InlineQuery,
+    InlineUnit,
+)
 from .pointers import PointerDict, PointerList
 
 __all__ = [

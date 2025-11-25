@@ -10,7 +10,7 @@ import time
 import typing
 
 from legacytl.hints import EntityLike
-from legacytl.tl.types import Message, PeerUser, User
+from legacytl.tl.types import Message, User
 from legacytl.utils import get_display_name
 
 from .. import loader, main, security, utils

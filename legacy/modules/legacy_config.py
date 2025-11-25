@@ -1002,7 +1002,9 @@ class LegacyConfigMod(loader.Module):
             ]
         else:
             to_config = [
-                lib.name for lib in self.allmodules.libraries if hasattr(lib, "config")  # type: ignore
+                lib.name
+                for lib in self.allmodules.libraries
+                if hasattr(lib, "config")  # type: ignore
             ]
 
         to_config.sort()  # type: ignore

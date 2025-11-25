@@ -122,8 +122,12 @@ class CommandDispatcher:
 
         self.raw_handlers = []
 
-    def _grep(self, pattern: str, text: str, invert: bool = False, ignore_case: bool = False) -> str:
-        regex = re.compile(re.escape(pattern).strip(), (re.IGNORECASE if ignore_case else 0))
+    def _grep(
+        self, pattern: str, text: str, invert: bool = False, ignore_case: bool = False
+    ) -> str:
+        regex = re.compile(
+            re.escape(pattern).strip(), (re.IGNORECASE if ignore_case else 0)
+        )
         result = []
 
         for line in text.splitlines():
@@ -132,7 +136,7 @@ class CommandDispatcher:
 
             if invert:
                 isMatched = not isMatched
-            
+
             if isMatched:
                 if match:
                     highlight = lambda m: f"<u><i>{m.group(0)}</i></u>"
@@ -168,18 +172,20 @@ class CommandDispatcher:
         old_respond = message.respond
 
         def process_text(text: str) -> str:
-            grep_args = grep_raw_args.split(' ')
+            grep_args = grep_raw_args.split(" ")
 
-            ignore_case = '-i' in grep_args
-            invert = '-v' in grep_args
+            ignore_case = "-i" in grep_args
+            invert = "-v" in grep_args
 
-            filtered_pattern = [str(a) for a in grep_args if a not in ('-i', '-v')]
-            pattern = ' '.join(filtered_pattern) if filtered_pattern else '.*'
+            filtered_pattern = [str(a) for a in grep_args if a not in ("-i", "-v")]
+            pattern = " ".join(filtered_pattern) if filtered_pattern else ".*"
 
-            grepped_text = self._grep(pattern=pattern, text=text, invert=invert, ignore_case=ignore_case)
+            grepped_text = self._grep(
+                pattern=pattern, text=text, invert=invert, ignore_case=ignore_case
+            )
 
             if not grepped_text.strip():
-                return '<emoji document_id=5237808360882977239>✂️</emoji> <b>No lines to grep</b>'
+                return "<emoji document_id=5237808360882977239>✂️</emoji> <b>No lines to grep</b>"
 
             return grepped_text
 

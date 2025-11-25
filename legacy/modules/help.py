@@ -334,9 +334,7 @@ class Help(loader.Module):
             if self.config["show_cmds"]:
                 for cmd in icommands:
                     if first:
-                        tmp += (
-                            f": ( <emoji document_id=6030400221232501136>🤖</emoji> {cmd}"
-                        )
+                        tmp += f": ( <emoji document_id=6030400221232501136>🤖</emoji> {cmd}"
                         first = False
                     else:
                         tmp += f" | <emoji document_id=6030400221232501136>🤖</emoji> {cmd}"
@@ -385,7 +383,9 @@ class Help(loader.Module):
         full_list = (
             core_ + plain_ + no_commands_
             if force
-            else hidden_mods + no_commands_ if only_hidden else core_ + plain_
+            else hidden_mods + no_commands_
+            if only_hidden
+            else core_ + plain_
         )
         await utils.answer(
             message,

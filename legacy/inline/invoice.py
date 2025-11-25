@@ -11,8 +11,12 @@ import contextlib
 import logging
 import typing
 
-from aiogram.types import (InlineQuery, InlineQueryResultArticle,
-                           InputInvoiceMessageContent, LabeledPrice)
+from aiogram.types import (
+    InlineQuery,
+    InlineQueryResultArticle,
+    InputInvoiceMessageContent,
+    LabeledPrice,
+)
 from legacytl.tl.types import Message
 
 from .. import utils
@@ -35,7 +39,7 @@ class Invoice(InlineUnit):
         *,
         photo_url: typing.Optional[str] = None,
         max_tip_amount: typing.Optional[int] = None,
-        suggested_tip_amounts: typing.Optional[typing.List[int]] = None
+        suggested_tip_amounts: typing.Optional[typing.List[int]] = None,
     ) -> typing.Union[InlineMessage, bool]:
         if not isinstance(message, Message):
             logger.error(
@@ -109,7 +113,7 @@ class Invoice(InlineUnit):
 
         if unit not in self._units or self._units[unit]["type"] != "invoice":
             return
-        
+
         form = self._units[unit]
         with contextlib.suppress(Exception):
             results = [
