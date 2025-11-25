@@ -75,6 +75,7 @@ from legacytl.tl.types import (
     MessageEntityBold,
     MessageEntityBotCommand,
     MessageEntityCashtag,
+    TypeInputMedia,
     MessageEntityCode,
     MessageEntityCustomEmoji,
     MessageEntityEmail,
@@ -448,6 +449,7 @@ async def answer(
     response: str,
     *,
     reply_markup: typing.Optional[LegacyReplyMarkup] = None,
+    file: typing.Optional[TypeInputMedia] = None,
     **kwargs,
 ) -> typing.Union[InlineCall, InlineMessage, Message]:
     """
@@ -557,8 +559,6 @@ async def answer(
                 return result
 
         if edit:
-            with contextlib.suppress(KeyError):
-                kwargs.pop("file")
             result = await message.edit(
                 text,
                 parse_mode=lambda t: (t, entities),
