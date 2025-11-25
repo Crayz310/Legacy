@@ -562,7 +562,8 @@ async def answer(
             result = await message.edit(
                 text,
                 parse_mode=lambda t: (t, entities),
-                media=file,
+                media=file if not isinstance(file, TypeInputMedia) else None,
+                file=file if isinstance(file, TypeInputMedia) else None,
                 **kwargs,
             )
         else:

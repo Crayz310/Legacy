@@ -146,7 +146,7 @@ class LegacyInfoMod(loader.Module):
             await utils.answer(
                 message,
                 await self._render_info(args, custom_prefix),
-                media=InputMediaWebPage(media, optional=True) if media else None,
+                file=InputMediaWebPage(media, optional=True) if media else None,
                 invert_media=True,
             )
         else:
