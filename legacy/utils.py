@@ -58,6 +58,7 @@ from legacytl.tl.functions.channels import (
     InviteToChannelRequest,
     GetForumTopicsByIDRequest,
     CreateForumTopicRequest,
+    EditForumTopicRequest,
 )
 from legacytl.tl.functions.messages import (
     GetDialogFiltersRequest,
@@ -778,6 +779,7 @@ async def asset_channel(
     avatar: typing.Optional[str] = None,
     ttl: typing.Optional[int] = None,
     forum: bool = False,
+    hide_general: bool = False,
     _folder: typing.Optional[str] = None,
 ) -> typing.Tuple[Channel, bool]:
     """
@@ -792,6 +794,7 @@ async def asset_channel(
     :param avatar: Url to an avatar to set as pfp of created peer
     :param ttl: Time to live for messages in channel
     :param forum: Whether to create a forum channel
+    :param hide_general: Hide '#General' topic
     :return: Peer and bool: is channel new or pre-existent
     """
     if not hasattr(client, "_channels_cache"):
@@ -851,6 +854,10 @@ async def asset_channel(
     if avatar:
         await fw_protect()
         await set_avatar(client, peer, avatar)
+
+    if hide_general and forum:
+        await fw_protect()
+        await client(EditForumTopicRequest(channel=peer, topic_id=1, hidden=True))
 
     if ttl:
         await fw_protect()
