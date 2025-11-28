@@ -702,6 +702,8 @@ async def set_avatar(
                 avatar,
             )
         ).content
+    elif isinstance(avatar, str) and os.path.exists(avatar):
+        f = avatar
     elif isinstance(avatar, bytes):
         f = avatar
     else:
