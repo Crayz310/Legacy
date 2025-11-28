@@ -66,6 +66,7 @@ class LoaderMod(loader.Module):
             ),
             loader.ConfigValue(
                 "share_link",
+                True,
                 doc=lambda: self.strings("share_link_doc"),
                 validator=loader.validators.Boolean(),
             ),
