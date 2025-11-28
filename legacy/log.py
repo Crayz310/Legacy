@@ -319,6 +319,9 @@ class TelegramLogsHandler(logging.Handler):
 
     def get_logid_by_client(self, client_id: int) -> int:
         return self._mods[client_id].logchat
+    
+    def get_logs_topic_id_by_client(self, client_id: int) -> int:
+        return self._mods[client_id]._logs_topic.id
 
     async def sender(self):
         async with self._send_lock:
@@ -375,6 +378,7 @@ class TelegramLogsHandler(logging.Handler):
                             reply_markup=self._mods[client_id].inline.generate_markup(
                                 reply_markup_btns
                             ),
+                            message_thread_id=self._mods[client_id]._logs_topic.id,
                         )
 
             self.tg_buff = []
@@ -396,6 +400,7 @@ class TelegramLogsHandler(logging.Handler):
                             "<b>🧳 Journals are too big to be sent as separate"
                             " messages</b>"
                         ),
+                        message_thread_id=self._mods[client_id]._logs_topic.id,
                     )
 
                     self._queue[client_id] = []
@@ -408,6 +413,7 @@ class TelegramLogsHandler(logging.Handler):
                                 self._mods[client_id].logchat,
                                 f"<code>{chunk}</code>",
                                 disable_notification=True,
+                                message_thread_id=self._mods[client_id]._logs_topic.id,
                             )
                         )
 

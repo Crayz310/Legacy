@@ -951,6 +951,17 @@ async def asset_forum_topic(
 
     return new_topic
 
+async def wait_for_content_channel(db: 'Database', delay: float = 10) -> int:
+    cid = db.get("legacy.forums", "channel_id", None)
+    
+    while not cid:
+        logger.warning("Legacy content channel not found in database. Sleeping 10 seconds...")
+        await asyncio.sleep(delay)
+        cid = db.get("legacy.forums", "channel_id", None)
+    
+    return cid
+    
+
 async def dnd(
     client: CustomTelegramClient,
     peer: hints.Entity,
