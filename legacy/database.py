@@ -63,15 +63,25 @@ class Database(dict):
         self.read()
 
         try:
-            self._content_channel_id = self.get("legacy.forums", "channel_id", None)
+            self._content_channel, _ = await utils.asset_channel(
+                client=self._client,
+                title='legacy-userbot',
+                description='🌙 Content related to legacy will be here',
+                silent=True,
+                avatar=f"{main.AVATAR_PATH}",
+                forum=True,
+                hide_general=True,
+                _folder='legacy',
+            )
 
-            if not self._content_channel_id:
-                raise KeyError("Legacy content channel not found in database")
+            self.set("legacy.forums", "channel_id", self._content_channel.id)
+
+            await utils.fw_protect()
 
             self._assets_topic = await utils.asset_forum_topic(
                 client=self._client,
                 db=self,
-                peer=self._content_channel_id,
+                peer=self._content_channel.id,
                 title="Assets",
                 description="🌆 Your Legacy assets will be stored here",
                 icon_emoji_id=5805550320985578625,
@@ -82,7 +92,6 @@ class Database(dict):
                 "Can't find and/or create assets topic\n"
                 "This may cause several consequences, such as:\n"
                 "- Non working assets feature (e.g. notes)\n\n"
-                "You can solve this problem by rebooting your userbot\n\n"
             )
 
     def read(self):
@@ -176,11 +185,11 @@ class Database(dict):
             raise NoAssetsChannel("Tried to save asset to non-existing asset topic")
 
         return (
-            (await self._client.send_message(self._content_channel_id, message, reply_to=self._assets_topic.id)).id
+            (await self._client.send_message(self._content_channel.id, message, reply_to=self._assets_topic.id)).id
             if isinstance(message, Message)
             else (
                 await self._client.send_message(
-                    self._content_channel_id,
+                    self._content_channel.id,
                     file=message,
                     force_document=True,
                     message_thread_id=self._assets_topic.id
@@ -195,7 +204,7 @@ class Database(dict):
                 "Tried to fetch asset from non-existing asset topic"
             )
 
-        asset = await self._client.get_messages(self._content_channel_id, ids=[asset_id])
+        asset = await self._client.get_messages(self._content_channel.id, ids=[asset_id])
 
         return asset[0] if asset else None
 

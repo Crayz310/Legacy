@@ -7,7 +7,7 @@
 import logging
 import os
 
-from .. import loader, translations, utils, main
+from .. import loader, translations, utils
 from ..inline.types import BotInlineCall
 
 logger = logging.getLogger(__name__)
@@ -42,20 +42,6 @@ class Quickstart(loader.Module):
                 "\n" + (self.strings("railway") if "RAILWAY" in os.environ else (""))
             ).rstrip()
         )
-
-        content_channel, _ = await utils.asset_channel(
-            client=client,
-            title='legacy-userbot',
-            description='🌙 Content related to legacy will be here',
-            silent=True,
-            invite_bot=True,
-            avatar=f"{main.AVATAR_PATH}",
-            forum=True,
-            hide_general=True,
-            _folder='legacy',
-        )
-
-        db.set("legacy.forums", "channel_id", int(content_channel.id))
 
         if self.get("no_msg"):
             return

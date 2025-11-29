@@ -62,6 +62,8 @@ class LegacyBackupMod(loader.Module):
 
         self._content_channel_id = await utils.wait_for_content_channel(self._db)
 
+        await utils.fw_protect()
+        
         self._backup_topic = await utils.asset_forum_topic(
             client=self._client,
             db=self._db,
