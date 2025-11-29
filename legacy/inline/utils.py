@@ -51,7 +51,7 @@ class Utils(InlineUnit):
         if isinstance(markup_obj, InlineKeyboardMarkup):
             return markup_obj
 
-        markup = InlineKeyboardMarkup(inline_keyboard=[])
+        inline_keyboard = []
 
         map_ = (
             self._units[markup_obj]["buttons"]
@@ -220,7 +220,9 @@ class Utils(InlineUnit):
                     )
                     return False
 
-            markup.inline_keyboard.append(line)
+            inline_keyboard.append(line)
+
+            markup = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
         return markup
 
