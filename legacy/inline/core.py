@@ -222,7 +222,7 @@ class InlineManager(
     async def _stop(self):
         """Stop the bot"""
         self._task.cancel()
-        self._dp.stop_polling()
+        await self._dp.stop_polling()
         self._cleaner_task.cancel()
 
     def pop_web_auth_token(self, token: str) -> bool:
