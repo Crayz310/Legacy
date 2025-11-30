@@ -293,7 +293,8 @@ class Web:
         )
 
     async def can_add(self, request: web.Request) -> web.Response:
-        if self.client_data:
+        host = utils.get_current_platform() or utils._hosts.get("vds")
+        if self.client_data and host.get("single_session", False):
             return web.Response(status=403, body="Forbidden by EULA")
 
         return web.Response(status=200, body="Yes")
