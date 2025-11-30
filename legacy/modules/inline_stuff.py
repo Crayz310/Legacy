@@ -134,7 +134,10 @@ class InlineStuff(loader.Module):
                     if response.status == 200:
                         data = await response.json()
                         if data.get("ok"):
+                            await self.inline._stop()
+                            self.inline._token = args
                             self._db.set("legacy.inline", "bot_token", args)
+                            await self.inline.register_manager(ignore_token_checks=True)
                             return await utils.answer(
                                 message, self.strings["token_changed"]
                             )

@@ -312,7 +312,7 @@ inline_stuff:
   this_is_legacy: "🌙 <b>Hi! This is Legacy — powerful modular Telegram userbot. You can install it to your account!</b>\n\n<b>🌍 <a href=\"https://github.com/Crayz310/Legacy\">GitHub</a></b>\n<b>👥 <a href=\"https://t.me/legacy_help\">Support chat</a></b>"
   token_not_provided: "<emoji document_id=5210952531676504517>🚫</emoji> <b>Bot token not provided</b>"
   invalid_token_format: "<emoji document_id=5240241223632954241>🚫</emoji> <b>Invalid token!</b>"
-  token_changed: "<emoji document_id=5427009714745517609>✅</emoji> <b>Bot token changed. Please restart userbot</b>"
+  token_changed: "<emoji document_id=5427009714745517609>✅</emoji> <b>Bot token changed.</b>"
   privacy_leak_nowarn: "<b>⚠️ This command grants access to your Legacy authorization. Running it in public chats is a security risk. To disable this warning, run</b> <code>{}</code>"
   privacy_leak: "<b>⚠️ This command grants access to your Legacy authorization. Running it in public chats is a security risk</b>"
   btn_yes: "🚸 Run anyway"
