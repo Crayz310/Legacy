@@ -464,10 +464,10 @@ class Web:
 
         token = utils.rand(8)
 
-        markup = InlineKeyboardMarkup()
-        markup.add(
+        markup = InlineKeyboardMarkup(inline_keyboard=[[]])
+        markup.inline_keyboard[0].append(
             InlineKeyboardButton(
-                "🔓 Authorize user",
+                text="🔓 Authorize user",
                 callback_data=f"authorize_web_{token}",
             )
         )
