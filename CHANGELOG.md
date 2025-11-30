@@ -53,12 +53,32 @@
 - Updatel Legacy-TL-New
 - Dispatcher refactoring
 
-## 🌙 Legacy: Incendium
+## 🌙 Legacy: ReGenesis
 
 - Added banner for ping
 - Added new configs
 - Improved strings
 - Fixed grep
 - Fixed loadmod output
-- Updated Limoka (v1.1.1)
+- Updated Limoka (v1.3.0)
 - Removed SharkHost (a.k.a TeaHost) support
+- Added HikkaHost support
+- Reworked 'grep' logic
+- Added quotes for media in LegacyInfo, TesterMod
+- Fixed help for libs
+- Updated LegacyInfo default text
+- Added ability to hide module commands in Help
+- Updated Legacy-TL-New
+- Added Banana PI support
+- Added new keywoard '{tlversion}' in LegacyInfo
+- Removed EULA for HikkaHost 
+- Fixed 'InlineCall has no attr sender_id'
+- Fixed output in Eval
+- Some cosmetic changes
+- Switched to aiogram 3.22
+- Added inline.invoice method
+- Fixed some bugs
+- Fixed types
+- Added new strings for legacycmd
+- Moved from asset chats to a single forum with topics
+- Added aiogram version in legacycmd
