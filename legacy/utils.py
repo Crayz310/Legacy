@@ -153,12 +153,17 @@ def get_args(message: typing.Union[Message, str]) -> typing.List[str]:
     :param message: Message or string to get arguments from
     :return: List of arguments
     """
+    prefix = message.client.loader.get_prefix(message.sender_id)
+
     if not (message := getattr(message, "message", message)):
         return False
 
+    if message.startswith(prefix):
+        message = message[len(prefix):].strip()
+
     if len(message := message.split(maxsplit=1)) <= 1:
         return []
-
+    
     message = message[1]
 
     try:
@@ -175,8 +180,13 @@ def get_args_raw(message: typing.Union[Message, str]) -> str:
     :param message: Message or string to get arguments from
     :return: Raw string of arguments
     """
+    prefix = message.client.loader.get_prefix(message.sender_id)
+    
     if not (message := getattr(message, "message", message)):
         return False
+    
+    if message.startswith(prefix):
+        message = message[len(prefix):].strip()
 
     return args[1] if len(args := message.split(maxsplit=1)) > 1 else ""
 
