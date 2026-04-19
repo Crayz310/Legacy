@@ -136,3 +136,17 @@ class CustomBot(Bot):
         params.update(kwargs)
 
         return await super().set_chat_photo(**{k: v for k, v in params.items()})
+
+    async def send_voice(
+        self,
+        chat_id: Union[int, str],
+        voice: Union[InputFile, str],
+        **kwargs: Any,
+    ) -> Message:
+        voice = _validate_file_type(voice)
+
+        params = {"chat_id": chat_id, "voice": voice}
+
+        params.update(kwargs)
+
+        return await super().send_voice(**{k: v for k, v in params.items()})
