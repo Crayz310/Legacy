@@ -234,7 +234,7 @@ class Limoka(loader.Module):
             7: "<emoji document_id=5415769763857060166>7️⃣</emoji>",
             8: "<emoji document_id=5416006506749383505>8️⃣</emoji>",
             9: "<emoji document_id=5415963015910544694>9️⃣</emoji>",
-            10: "<emoji document_id=5415642160378696377>🔟</emoji>"
+            10: "<emoji document_id=5415642160378696377>🔟</emoji>",
         },
         "404": "<blockquote><emoji document_id=5210952531676504517>❌</emoji> <b>Не найдено по запросу: <i>{query}</i></b></blockquote>",
         "noargs": "<blockquote><emoji document_id=5210952531676504517>❌</emoji> <b>Нет аргументов</b></blockquote>",
@@ -321,19 +321,25 @@ class Limoka(loader.Module):
             loader.ConfigValue(
                 "limokaurl",
                 "https://raw.githubusercontent.com/MuRuLOSE/limoka/refs/heads/main/",
-                lambda: "Mirror (doesn't work): https://raw.githubusercontent.com/MuRuLOSE/limoka-mirror/refs/heads/main/",
+                lambda: (
+                    "Mirror (doesn't work): https://raw.githubusercontent.com/MuRuLOSE/limoka-mirror/refs/heads/main/"
+                ),
                 validator=loader.validators.String(),
             ),
             loader.ConfigValue(
                 "external_install_allowed",
                 True,
-                lambda: "If enabled, module installation can be handled via external Limoka bot (@limoka_bbot) for better reliability.",
+                lambda: (
+                    "If enabled, module installation can be handled via external Limoka bot (@limoka_bbot) for better reliability."
+                ),
                 validator=loader.validators.Boolean(),
             ),
             loader.ConfigValue(
                 "filter_newbies_modules",
                 False,
-                lambda: "If enabled, modules from developers with newbies tag will be not shown.",
+                lambda: (
+                    "If enabled, modules from developers with newbies tag will be not shown."
+                ),
                 validator=loader.validators.Boolean(),
             ),
         )
@@ -442,8 +448,10 @@ class Limoka(loader.Module):
         self._service_bot_id = (await self.client.get_entity(self._bot_username)).id
 
         loop = asyncio.get_running_loop()
-        self.ix_task = loop.run_in_executor(None, lambda: asyncio.run(self._update_index()))
-        
+        self.ix_task = loop.run_in_executor(
+            None, lambda: asyncio.run(self._update_index())
+        )
+
         if self.config["external_install_allowed"]:
             try:
                 message = await self.client.get_messages(self._bot_username, limit=1)
@@ -483,7 +491,7 @@ class Limoka(loader.Module):
             modules_to_index = self._filter_newbies(self.modules)
             for module_path, module_data in modules_to_index.items():
                 writer.add_document(
-                    title=module_data["name"],
+                    title=module_data.get("name", "Unknown"),
                     path=module_path,
                     content=module_data["name"]
                     + " "
@@ -509,7 +517,9 @@ class Limoka(loader.Module):
         except LockError:
             folder = os.path.join(BASE_DIR, "limoka_search")
 
-            if os.path.commonpath([folder, BASE_DIR]) == BASE_DIR and os.path.exists(folder):
+            if os.path.commonpath([folder, BASE_DIR]) == BASE_DIR and os.path.exists(
+                folder
+            ):
                 shutil.rmtree(folder)
                 await self._update_index()
             else:
@@ -540,7 +550,7 @@ class Limoka(loader.Module):
             if url:
                 self._invalid_banners.add(url)
             return None
-        
+
     def find_userbot(self, keys: Iterable[str]) -> str | None:
         scores = defaultdict(int)
 
@@ -560,7 +570,6 @@ class Limoka(loader.Module):
 
         return max(scores, key=scores.get)
 
-
     @property
     def user_lang(self) -> str:
 
@@ -574,7 +583,7 @@ class Limoka(loader.Module):
                 "If this is unexpected, please report to the module developer."
             )
             return "en"
-        
+
         return self.db.get(f"{userbot}.translations", "lang")
 
     def generate_commands(self, module_info, lang: str = "en"):
@@ -760,7 +769,7 @@ class Limoka(loader.Module):
                         ),
                     },
                     {
-                        "text": f"{self.strings["body_page"]} {page_body + 1}/{len(body_pages)}",
+                        "text": f"{self.strings['body_page']} {page_body + 1}/{len(body_pages)}",
                         "callback": self._inline_void,
                     },
                     {
@@ -1314,7 +1323,7 @@ class Limoka(loader.Module):
             buttons.append(
                 [
                     {
-                        "text": f"{i+1}. {name}",
+                        "text": f"{i + 1}. {name}",
                         "callback": self._display_module_from_global,
                         "args": (path, global_session),
                     }
@@ -1542,7 +1551,7 @@ class Limoka(loader.Module):
             buttons.append(
                 [
                     {
-                        "text": f"{i+1}. {name}",
+                        "text": f"{i + 1}. {name}",
                         "callback": self._display_module_from_global,
                         "args": (path, global_session),
                     }
@@ -1577,7 +1586,7 @@ class Limoka(loader.Module):
             await utils.answer(message, self.strings["empty_history"])
             return
         formatted_history = [
-            f"{i+1}. <code>{utils.escape_html(h)}</code>"
+            f"{i + 1}. <code>{utils.escape_html(h)}</code>"
             for i, h in enumerate(history[-10:])
         ]
         await utils.answer(
@@ -1717,3 +1726,4 @@ class Limoka(loader.Module):
                 await message.delete()
             except Exception:
                 pass
+
