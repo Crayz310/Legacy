@@ -356,6 +356,11 @@ class Evaluator(loader.Module):
             )
             return
 
+        _env = os.environ.copy()
+        if "DOCKER" in os.environ and os.path.exists(_GO_PATH := "/usr/local/go/bin"):
+            if _GO_PATH not in _env:
+                _env["PATH"] = f"{_GO_PATH}:{_env}"
+
         code = utils.get_args_raw(message)
         error = False
 
@@ -368,6 +373,7 @@ class Evaluator(loader.Module):
                 subprocess.run(
                     ["go", "mod", "init", "temp_module"],
                     cwd=tmpdir,
+                    env=_env,
                     capture_output=True,
                     check=True,
                 )
@@ -375,6 +381,7 @@ class Evaluator(loader.Module):
                 result = subprocess.check_output(
                     ["go", "build", "-o", "gprog", "main.go"],
                     cwd=tmpdir,
+                    env=_env,
                     stderr=subprocess.STDOUT,
                 ).decode()
             except subprocess.CalledProcessError as e:
@@ -384,7 +391,7 @@ class Evaluator(loader.Module):
             if not result:
                 try:
                     result = subprocess.check_output(
-                        ["./gprog"], cwd=tmpdir, stderr=subprocess.STDOUT
+                        ["./gprog"], cwd=tmpdir, env=_env, stderr=subprocess.STDOUT
                     ).decode()
                 except subprocess.CalledProcessError as e:
                     result = e.output.decode()
