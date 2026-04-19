@@ -34,7 +34,9 @@ class Evaluator(loader.Module):
             loader.ConfigValue(
                 "hide_telethon_results",
                 False,
-                lambda: "Suppress the output of Telethon API method return values (e.g., Message, AffectedMessages) in the result",
+                lambda: (
+                    "Suppress the output of Telethon API method return values (e.g., Message, AffectedMessages) in the result"
+                ),
                 validator=loader.validators.Boolean(),
             )
         )
@@ -343,6 +345,68 @@ class Evaluator(loader.Module):
                 ),
             )
 
+    @loader.command()
+    async def ego(self, message: Message):
+        try:
+            subprocess.check_output(["go", "version"], stderr=subprocess.STDOUT)
+        except Exception:
+            await utils.answer(
+                message,
+                self.strings("no_compiler").format("5300888829027165969", "GO"),
+            )
+            return
+
+        code = utils.get_args_raw(message)
+        error = False
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            file = os.path.join(tmpdir, "main.go")
+            with open(file, "w") as f:
+                f.write(code)
+
+            try:
+                subprocess.run(
+                    ["go", "mod", "init", "temp_module"],
+                    cwd=tmpdir,
+                    capture_output=True,
+                    check=True,
+                )
+
+                result = subprocess.check_output(
+                    ["go", "build", "-o", "gprog", "main.go"],
+                    cwd=tmpdir,
+                    stderr=subprocess.STDOUT,
+                ).decode()
+            except subprocess.CalledProcessError as e:
+                result = e.output.decode()
+                error = True
+
+            if not result:
+                try:
+                    result = subprocess.check_output(
+                        ["./gprog"], cwd=tmpdir, stderr=subprocess.STDOUT
+                    ).decode()
+                except subprocess.CalledProcessError as e:
+                    result = e.output.decode()
+                    error = True
+
+        with contextlib.suppress(MessageIdInvalidError):
+            await utils.answer(
+                message,
+                self.strings("err" if error else "eval").format(
+                    "5300888829027165969",
+                    "go",
+                    utils.escape_html(code),
+                    "error" if error else "output",
+                    utils.escape_html(result),
+                )
+                + (
+                    self.strings("result").format("go", utils.escape_html(result))
+                    if result and not error
+                    else ""
+                ),
+            )
+
     def censor(self, ret: str) -> str:
         ret = ret.replace(str(self._client.legacy_me.phone), "&lt;phone&gt;")
 
@@ -396,9 +460,9 @@ class Evaluator(loader.Module):
         return {
             **dict(
                 filter(
-                    lambda x: x[0][0] != "_"
-                    and x[0][0].upper() == x[0][0]
-                    and callable(x[1]),
+                    lambda x: (
+                        x[0][0] != "_" and x[0][0].upper() == x[0][0] and callable(x[1])
+                    ),
                     obj.__dict__.items(),
                 )
             ),
@@ -407,11 +471,13 @@ class Evaluator(loader.Module):
                     [
                         self.get_sub(y[1], _depth + 1).items()
                         for y in filter(
-                            lambda x: x[0][0] != "_"
-                            and isinstance(x[1], ModuleType)
-                            and x[1] != obj
-                            and x[1].__package__.rsplit(".", _depth)[0]
-                            == "legacytl.tl",
+                            lambda x: (
+                                x[0][0] != "_"
+                                and isinstance(x[1], ModuleType)
+                                and x[1] != obj
+                                and x[1].__package__.rsplit(".", _depth)[0]
+                                == "legacytl.tl"
+                            ),
                             obj.__dict__.items(),
                         )
                     ]
