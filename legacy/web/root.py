@@ -540,7 +540,7 @@ class Web:
 
         session = f"legacy_{utils.rand(16)}"
 
-        if not ops:
+        if not ops and len(self.client_data) == 0:
             # If no auth message was sent, just leave it empty
             # probably, request was a bug and user doesn't have
             # inline bot or did not authorize any sessions
